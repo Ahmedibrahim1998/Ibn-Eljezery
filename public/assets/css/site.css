@@ -1,0 +1,191 @@
+/* ============================================================= */
+/*  Site overrides & additions (loaded after style.css)          */
+/* ============================================================= */
+
+/* Fix: the base style hides ALL .section-title (opacity:0) but only
+   reveals them inside .about-content.visible — which left every other
+   section's title invisible. Make titles visible by default; keep the
+   entrance animation scoped to the About section only. */
+.section-title {
+  opacity: 1;
+  transform: none;
+}
+
+.about-content .section-title {
+  opacity: 0;
+  transform: translateY(-30px) scale(0.9);
+}
+
+.about-content.visible .section-title {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ---- "View all" listing pages ---- */
+.listing-page {
+  padding-top: 120px; /* clear the fixed navbar */
+}
+
+/* The base style.css hides several cards/sections with opacity:0 and only
+   reveals them via JS-added `.visible` classes that exist on the homepage.
+   Listing pages have no such wrappers, so force these visible here. */
+.listing-page .section-title,
+.listing-page .teachers-section,
+.listing-page .teacher-card,
+.listing-page .pricing-card,
+.listing-page .testimonial-card,
+.listing-page .feature-card,
+.listing-page .about-content,
+.listing-page .about-box {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.listing-page .pagination {
+  --bs-pagination-color: #198754;
+  --bs-pagination-active-bg: #198754;
+  --bs-pagination-active-border-color: #198754;
+  --bs-pagination-hover-color: #157347;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+/* Keep pagination arrows intuitive in RTL */
+html[dir="rtl"] .pagination .page-item:first-child .page-link,
+html[dir="rtl"] .pagination .page-item:last-child .page-link {
+  transform: scaleX(-1);
+}
+html[dir="rtl"] .pagination .page-item .page-link {
+  direction: ltr;
+}
+
+/* ---- Teacher card as a full link ---- */
+.teacher-card-link {
+  cursor: pointer;
+  color: inherit;
+}
+.teacher-card-link:hover {
+  color: inherit;
+}
+
+/* ============================================================= */
+/*  Detail pages (teacher profile / course)                      */
+/* ============================================================= */
+.detail-hero {
+  background: linear-gradient(135deg, #198754 0%, #157347 100%);
+  color: #fff;
+  border-radius: 1.25rem;
+  padding: 2.75rem 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1rem 2.5rem rgba(21, 115, 71, 0.25);
+}
+.detail-hero::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: -60px;
+  top: -60px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.detail-hero > * {
+  position: relative;
+  z-index: 1;
+}
+.detail-avatar {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 3px solid rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 auto 1rem;
+  overflow: hidden;
+}
+.detail-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.detail-badge {
+  background: rgba(255, 255, 255, 0.92);
+  color: #157347;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+}
+.detail-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+/* Green check list for details */
+.detail-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.detail-list li {
+  position: relative;
+  padding-inline-start: 1.9rem;
+  margin-bottom: 0.7rem;
+  line-height: 1.7;
+}
+.detail-list li::before {
+  content: "✓";
+  position: absolute;
+  inset-inline-start: 0;
+  top: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  background: #e9f7ef;
+  color: #198754;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Session cards on the course page */
+.session-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.9rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  background: #fff;
+}
+.session-card:hover {
+  box-shadow: 0 0.6rem 1.5rem rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+.session-date {
+  background: #e9f7ef;
+  color: #157347;
+  border-radius: 0.85rem;
+  padding: 0.6rem 0.5rem;
+  text-align: center;
+  min-width: 72px;
+  line-height: 1.2;
+}
+.session-date .day {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.session-date .mon {
+  font-size: 0.75rem;
+}
