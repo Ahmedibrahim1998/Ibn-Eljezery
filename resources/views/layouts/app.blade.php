@@ -26,7 +26,7 @@
   {{-- Navbar --}}
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="#hero">
+      <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}/#hero">
         <img src="{{ asset('assets/LOGO/logo.png') }}" alt="{{ localizedSetting('brand_name') }}" class="logo-img me-2" />
         <span>{{ localizedSetting('brand_name', config('app.name')) }}</span>
       </a>
@@ -37,14 +37,14 @@
 
       <div class="collapse navbar-collapse" id="mainNavbar">
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="#hero">{{ siteText('nav.home') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="#about">{{ siteText('nav.about') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="#teachers">{{ siteText('nav.teachers') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="#programs">{{ siteText('nav.programs') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="#courses">{{ siteText('nav.courses') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="#memorization">{{ siteText('nav.memorization') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="#testimonials">{{ siteText('nav.testimonials') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="#faq">{{ siteText('nav.faq') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#hero">{{ siteText('nav.home') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#about">{{ siteText('nav.about') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#teachers">{{ siteText('nav.teachers') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#programs">{{ siteText('nav.programs') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#courses">{{ siteText('nav.courses') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#memorization">{{ siteText('nav.memorization') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#testimonials">{{ siteText('nav.testimonials') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#faq">{{ siteText('nav.faq') }}</a></li>
           <li class="nav-item d-flex align-items-center">
             <a class="btn btn-sm btn-outline-light ms-lg-2 mt-2 mt-lg-0"
                href="{{ route('locale.switch', $locale === 'ar' ? 'en' : 'ar') }}">
@@ -52,7 +52,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link btn btn-outline-light px-3 py-1 ms-lg-2 mt-2 mt-lg-0" href="#contact">
+            <a class="nav-link btn btn-outline-light px-3 py-1 ms-lg-2 mt-2 mt-lg-0" href="{{ route('home') }}/#contact">
               {{ siteText('nav.signup') }}
             </a>
           </li>

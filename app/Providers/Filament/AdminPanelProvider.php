@@ -30,6 +30,10 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('مركز ابن الجزري')
+            ->brandLogo(asset('assets/LOGO/logo.png'))
+            ->brandLogoHeight('2.6rem')
+            ->favicon(asset('assets/LOGO/logo.png'))
             ->colors([
                 'primary' => Color::Emerald,
             ])

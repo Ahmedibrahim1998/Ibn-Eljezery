@@ -1,59 +1,126 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# مركز ابن الجزري لتحفيظ القرآن الكريم — Ibn Al-Jazari Center
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+موقع ديناميكي ثنائي اللغة (عربي/إنجليزي، RTL/LTR) لمركز تحفيظ قرآن، مبني بـ **Laravel 12** و **Filament 3**، مع لوحة تحكم للإدارة ولوحة خاصة للمعلمين، ونظام حجز دورات (حضوري/أونلاين) بتكامل **Zoom**.
 
-## About Laravel
+A bilingual (Arabic/English) dynamic website for a Quran-memorization center, built with **Laravel 12** + **Filament 3**, featuring an admin panel, a dedicated teacher panel, and a course-booking system (in-person / online) with **Zoom** integration.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## المميزات · Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- 🌐 **واجهة عامة ثنائية اللغة** (RTL/LTR) — كل النصوص تُدار من لوحة التحكم.
+- 🧑‍💼 **لوحة تحكم للأدمن** (`/admin`) لإدارة كل المحتوى (المعلمون، الباقات، الدورات، الآراء، الأسئلة، الطلاب، الإعدادات) + إحصائيات ورسوم بيانية.
+- 👨‍🏫 **لوحة تحكم للمعلمين** (`/teacher`) — كل معلم يدير دوراته ومواعيده وحجوزات طلابه فقط.
+- 📅 **نظام حجز**: مواعيد للدورات + سعة مقاعد + منع الحجز المكرّر.
+- 🎥 **تكامل Zoom** تلقائي للدورات الأونلاين (Server-to-Server OAuth).
+- ✅ **حضور وغياب** مع حساب عدد حصص الحضور لكل طالب.
+- 🔐 **أدوار وصلاحيات** عبر Filament Shield.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## المتطلبات · Requirements
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| Tool | Version |
+|------|---------|
+| PHP | ^8.2 |
+| Composer | 2.x |
+| MySQL | 8.x |
+| Node.js | 18+ (اختياري للأصول) |
 
-## Laravel Sponsors
+الحزم الأساسية: `filament/filament ^3.3`، `filament-shield`، `laravel/sanctum`، `spatie/laravel-permission`، `spatie/laravel-route-attributes`، `wendelladriel/laravel-validated-dto`.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## التثبيت · Installation
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+# 1) شغّل MySQL (على Laragon مثلاً) وأنشئ قاعدة بيانات باسم ibneljezery
 
-## Contributing
+# 2) ثبّت الاعتماديات
+composer install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# 3) جهّز البيئة
+cp .env.example .env
+php artisan key:generate
 
-## Code of Conduct
+# 4) اضبط الاتصال بقاعدة البيانات في .env ثم:
+php artisan migrate --seed
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 5) اربط مجلد التخزين (لصور المعلمين)
+php artisan storage:link
 
-## Security Vulnerabilities
+# 6) شغّل المشروع
+php artisan serve
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+> على ويندوز/Laragon: لو MySQL لا يبدأ بخطأ `1455` (ملف الترحيل صغير)، قلّل `innodb_buffer_pool_size` في `my.ini`.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## الدخول · Access
+
+| الرابط | الوصف | بيانات الدخول الافتراضية |
+|--------|-------|--------------------------|
+| `/` | الموقع العام | — |
+| `/admin` | لوحة الأدمن | `admin@ibneljezery.test` / `password` |
+| `/teacher` | لوحة المعلم | تُنشأ من لوحة الأدمن (زر «حساب الدخول» في المعلمين) |
+
+تبديل اللغة: في الموقع من زر اللغة بالنافبار، وفي اللوحة من قائمة المستخدم.
+
+---
+
+## تكامل Zoom (اختياري)
+
+أنشئ تطبيق **Server-to-Server OAuth** من [Zoom Marketplace](https://marketplace.zoom.us) وأضف في `.env`:
+
+```env
+ZOOM_ACCOUNT_ID=your_account_id
+ZOOM_CLIENT_ID=your_client_id
+ZOOM_CLIENT_SECRET=your_client_secret
+ZOOM_TIMEZONE=Africa/Cairo
+```
+
+عند حفظ موعد لدورة أونلاين، يُنشأ اجتماع Zoom تلقائيًا ويظهر رابطه. **بدون هذه المفاتيح** يعمل النظام بشكل طبيعي ويترك رابط الزوم فارغًا ليُضاف يدويًا.
+
+---
+
+## البنية المعمارية · Architecture
+
+يتبع المشروع نمط **Repository / Service / DTO** فوق Eloquent:
+
+```
+app/
+├── Enum/{Course,Lead,Booking}/        # التعدادات (backed enums)
+├── Foundation/                        # Repository الأساسي + BasicEnum
+├── Repositories/{Entity}/             # واجهة + تنفيذ لكل كيان
+├── Services/Web/{Feature}/            # منطق الأعمال (Home, Lead, Booking)
+│   └── ThirdParties/Zoom/             # ZoomService
+├── Http/
+│   ├── Controllers/Web/               # واجهات الموقع العام
+│   └── DTOs/Web/                      # التحقق عبر Validated DTO
+├── Filament/Resources/                # لوحة الأدمن
+├── Filament/Teacher/                  # لوحة المعلم (Resources + Widgets)
+├── Observers/                         # CourseSessionObserver (Zoom)
+└── Models/                            # 12 موديل
+```
+
+- **ثنائية اللغة**: أعمدة `*_ar` / `*_en` + الدوال `localized()`، `localizedColumn()`، `setting()`، `siteText()`.
+- **نصوص الموقع**: كلها قابلة للتعديل من لوحة الإعدادات (جدول `settings`).
+
+---
+
+## الكيانات الأساسية · Core Entities
+
+`Teacher` · `Course` · `CourseSession` · `Booking` · `Program` · `Testimonial` · `Faq` · `Feature` · `WeeklyPlanRow` · `Lead` (الطلاب) · `Setting` · `User`
+
+---
+
+## أوامر مفيدة · Useful Commands
+
+```bash
+php artisan migrate:fresh --seed   # إعادة بناء القاعدة بالبيانات التجريبية
+php artisan optimize:clear         # مسح كل الكاش
+composer lint                      # تنسيق الكود (Pint) — إن تم تفعيله
+```
+
+هذا المشروع تعليمي، ويُبنى على اتفاقيات موثّقة في مجلد `../docs`.

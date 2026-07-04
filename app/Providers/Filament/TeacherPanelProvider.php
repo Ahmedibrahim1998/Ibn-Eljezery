@@ -29,6 +29,9 @@ class TeacherPanelProvider extends PanelProvider
             ->path('teacher')
             ->login()
             ->brandName('لوحة المعلم')
+            ->brandLogo(asset('assets/LOGO/logo.png'))
+            ->brandLogoHeight('2.6rem')
+            ->favicon(asset('assets/LOGO/logo.png'))
             ->colors([
                 'primary' => Color::Emerald,
             ])
