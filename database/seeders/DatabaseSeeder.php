@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             SiteTextSeeder::class,
             FeatureSeeder::class,
             TeacherSeeder::class,
+            UserSeeder::class,
             ProgramSeeder::class,
             CourseSeeder::class,
             TestimonialSeeder::class,
