@@ -21,6 +21,8 @@ class CourseSeeder extends Seeder
                 'description_ar' => 'لأبناء وبنات الحي، في قاعات مجهّزة داخل المركز، بإشراف مباشر من المعلمين.',
                 'description_en' => 'For neighborhood boys and girls, in equipped halls inside the center, with direct teacher supervision.',
                 'badge_ar' => 'حضوري - في مقر المركز', 'badge_en' => 'In-person - At Center',
+                'duration_months' => 5,
+                'enrollment_deadline' => now()->addDays(14),
                 'items' => [
                     ['ar' => 'دورات تلاوة وتحفيظ لجميع الأعمار.', 'en' => 'Recitation and memorization courses for all ages.'],
                     ['ar' => 'دورة تجويد تأسيسية ومتقدمة.', 'en' => 'Foundation and advanced tajweed courses.'],
@@ -33,6 +35,8 @@ class CourseSeeder extends Seeder
                 'description_ar' => 'دروس مباشرة عبر منصات آمنة، مع تسجيل الحصص وإتاحة متابعتها لولي الأمر.',
                 'description_en' => 'Live lessons through secure platforms, with session recording and parent follow-up.',
                 'badge_ar' => 'أونلاين - عبر الإنترنت', 'badge_en' => 'Online - Via Internet',
+                'duration_months' => 3,
+                'enrollment_deadline' => now()->addDays(21),
                 'items' => [
                     ['ar' => 'حلقات تحفيظ فردية وجماعية.', 'en' => 'Individual and group memorization circles.'],
                     ['ar' => 'دورات تجويد مكثفة وشهادات حضور.', 'en' => 'Intensive tajweed courses and attendance certificates.'],

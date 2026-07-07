@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+// بوابة الدخول (معلم / مشرف / أدمن)
+Route::view('/portal', 'portal')->name('portal');
+
 // "View all" listing pages
 Route::get('/teachers', [ListingController::class, 'teachers'])->name('teachers.index');
 Route::get('/programs', [ListingController::class, 'programs'])->name('programs.index');

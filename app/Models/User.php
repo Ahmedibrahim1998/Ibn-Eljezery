@@ -19,28 +19,22 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        // Teacher panel: only users linked to a teacher with the "teacher" role.
-        if ($panel->getId() === 'teacher') {
-            return $this->hasRole('teacher');
-        }
-
-        // Admin panel: any staff role except a plain teacher-only account.
-        return $this->roles()->exists() && ! $this->hasExactRoles('teacher');
-    }
-
-    /**
-     * True when the user's only role is the given one.
-    */
-    private function hasExactRoles(string $role): bool
-    {
-        $names = $this->getRoleNames();
-
-        return $names->count() === 1 && $names->first() === $role;
+        return match ($panel->getId()) {
+            'teacher' => $this->hasRole('teacher'),
+            'supervisor' => $this->hasRole('supervisor'),
+            default => $this->hasRole('super_admin'), // admin panel
+        };
     }
 
     public function teacher(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Teacher::class);
+    }
+
+    /** الدورات التي يشرف عليها هذا المستخدم (لمشرف الحضور). */
+    public function supervisedCourses(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Course::class, 'supervisor_id');
     }
 
     /**

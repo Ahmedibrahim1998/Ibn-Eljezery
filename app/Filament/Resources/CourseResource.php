@@ -45,12 +45,23 @@ class CourseResource extends Resource
             Forms\Components\Section::make(trans('panel.course.section'))->schema([
                 Forms\Components\Select::make('type')->label(trans('panel.course.type'))
                     ->options(CourseTypeEnum::class)->required()->default(CourseTypeEnum::OFFLINE),
+                Forms\Components\Select::make('teacher_id')->label(trans('panel.teacher.label'))
+                    ->relationship('teacher', 'name_ar')->searchable()->preload(),
+                Forms\Components\Select::make('supervisor_id')->label(trans('panel.supervisor.assign'))
+                    ->options(fn () => \App\Models\User::role('supervisor')->pluck('name', 'id'))
+                    ->searchable()->preload(),
                 Forms\Components\TextInput::make('title_ar')->label(trans('panel.course.title').' ('.trans('panel.common.ar').')')->required()->maxLength(255),
                 Forms\Components\TextInput::make('title_en')->label(trans('panel.course.title').' ('.trans('panel.common.en').')')->maxLength(255),
                 Forms\Components\Textarea::make('description_ar')->label(trans('panel.course.description').' ('.trans('panel.common.ar').')')->rows(3),
                 Forms\Components\Textarea::make('description_en')->label(trans('panel.course.description').' ('.trans('panel.common.en').')')->rows(3),
                 Forms\Components\TextInput::make('badge_ar')->label(trans('panel.course.badge').' ('.trans('panel.common.ar').')'),
                 Forms\Components\TextInput::make('badge_en')->label(trans('panel.course.badge').' ('.trans('panel.common.en').')'),
+                Forms\Components\TextInput::make('duration_months')->label(trans('panel.course.duration_months'))
+                    ->numeric()->minValue(1)->maxValue(60)->suffix(trans('panel.course.months'))
+                    ->helperText(trans('panel.course.duration_hint')),
+                Forms\Components\DatePicker::make('enrollment_deadline')->label(trans('panel.course.enrollment_deadline'))
+                    ->native(false)->minDate(today())
+                    ->helperText(trans('panel.course.enrollment_deadline_hint')),
             ])->columns(2),
 
             Forms\Components\Section::make(trans('panel.course.items_section'))->schema([

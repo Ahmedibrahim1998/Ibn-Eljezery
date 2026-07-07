@@ -13,9 +13,7 @@ class CourseController extends Controller
         abort_unless($course->is_active, 404);
 
         $course->load(['teacher', 'sessions' => function ($q) {
-            $q->where('is_active', true)
-                ->where('starts_at', '>=', now()->subHours(2))
-                ->orderBy('starts_at');
+            $q->where('is_active', true)->orderBy('starts_at');
         }]);
 
         return view('courses.show', ['course' => $course]);

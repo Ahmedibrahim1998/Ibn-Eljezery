@@ -4,41 +4,35 @@ namespace App\Services\Web\Booking;
 
 use App\Enum\Booking\BookingStatusEnum;
 use App\Exceptions\Booking\AlreadyBookedException;
-use App\Exceptions\Booking\SessionFullException;
 use App\Http\DTOs\Web\Booking\StoreBookingDTO;
 use App\Models\Booking;
-use App\Models\CourseSession;
+use App\Models\Course;
 
 class BookingService
 {
     /**
-     * Create a booking for a course session, enforcing capacity.
+     * Enroll a student in a course (once). Prevents duplicate enrollment
+     * by phone for the same course.
      *
-     * @throws SessionFullException
      * @throws AlreadyBookedException
      */
     public function store(StoreBookingDTO $dto): Booking
     {
-        /** @var CourseSession $session */
-        $session = CourseSession::query()->findOrFail($dto->course_session_id);
+        /** @var Course $course */
+        $course = Course::query()->where('is_active', true)->enrollmentOpen()->findOrFail($dto->course_id);
 
-        if (! $session->is_active || $session->isFull()) {
-            throw new SessionFullException();
-        }
-
-        // Prevent the same student (by phone) from booking the same session twice.
-        $alreadyBooked = Booking::query()
-            ->where('course_session_id', $session->id)
+        $alreadyEnrolled = Booking::query()
+            ->where('course_id', $course->id)
             ->where('phone', $dto->phone)
             ->where('status', '!=', BookingStatusEnum::CANCELLED->value)
             ->exists();
 
-        if ($alreadyBooked) {
+        if ($alreadyEnrolled) {
             throw new AlreadyBookedException();
         }
 
         return Booking::create([
-            'course_session_id' => $session->id,
+            'course_id' => $course->id,
             'name' => $dto->name,
             'phone' => $dto->phone,
             'email' => $dto->email,

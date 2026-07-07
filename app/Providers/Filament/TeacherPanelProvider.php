@@ -2,8 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Http\Middleware\Filament\Authenticate;
 use App\Http\Middleware\Filament\SetFilamentLocale;
-use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -49,7 +49,6 @@ class TeacherPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Teacher/Widgets'), for: 'App\\Filament\\Teacher\\Widgets')
             ->widgets([
                 Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

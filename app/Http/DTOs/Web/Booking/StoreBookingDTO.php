@@ -7,7 +7,7 @@ use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class StoreBookingDTO extends ValidatedDTO
 {
-    public int $course_session_id;
+    public int $course_id;
 
     public string $name;
 
@@ -23,7 +23,7 @@ class StoreBookingDTO extends ValidatedDTO
     protected function rules(): array
     {
         return [
-            'course_session_id' => ['required', 'integer', 'exists:course_sessions,id'],
+            'course_id' => ['required', 'integer', 'exists:courses,id'],
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:30'],
             'email' => ['nullable', 'email', 'max:255'],
@@ -45,7 +45,7 @@ class StoreBookingDTO extends ValidatedDTO
     protected function casts(): array
     {
         return [
-            'course_session_id' => new IntegerCast(),
+            'course_id' => new IntegerCast(),
         ];
     }
 }

@@ -8,18 +8,15 @@
 
       {{-- Flash messages --}}
       @if (session('booking_success'))
-        <div class="alert alert-success">
-          {{ session('booking_success') }}
-          @if (session('booking_join_url'))
-            <div class="mt-2">
-              <strong>{{ siteText('booking.zoom_link') }}:</strong>
-              <a href="{{ session('booking_join_url') }}" target="_blank" class="alert-link">{{ session('booking_join_url') }}</a>
-            </div>
-          @endif
-        </div>
+        <div class="alert alert-success">{{ session('booking_success') }}</div>
       @endif
       @if (session('booking_error'))
         <div class="alert alert-warning">{{ session('booking_error') }}</div>
+      @endif
+      @if ($errors->any())
+        <div class="alert alert-danger">
+          @foreach ($errors->all() as $error)<div>{{ $error }}</div>@endforeach
+        </div>
       @endif
 
       {{-- Hero header --}}
@@ -36,10 +33,16 @@
       </div>
 
       <div class="row g-4">
-        {{-- Course info --}}
-        <div class="col-lg-5">
-          <div class="bg-white rounded-4 shadow-sm p-4 h-100">
+        {{-- Course info + schedule --}}
+        <div class="col-lg-7">
+          <div class="bg-white rounded-4 shadow-sm p-4 mb-4">
             <h2 class="section-title h5 mb-3">{{ siteText('course.details') }}</h2>
+            @if ($course->durationLabel())
+              <div class="detail-badge d-inline-flex align-items-center gap-2 mb-3">
+                <span aria-hidden="true">🗓️</span>
+                <span>{{ siteText('course.total_duration') }}: <strong>{{ $course->durationLabel() }}</strong></span>
+              </div>
+            @endif
             @if ($course->localized('description'))
               <p class="text-muted" style="line-height:2;">{{ $course->localized('description') }}</p>
             @endif
@@ -50,84 +53,75 @@
                 @endforeach
               </ul>
             @endif
-            @if ($course->type->value === 'online')
-              <div class="alert alert-info small mt-3 mb-0">{{ siteText('booking.online_note') }}</div>
-            @endif
           </div>
+
+          {{-- Schedule (read-only) --}}
+          @if ($course->sessions->isNotEmpty())
+            <div class="bg-white rounded-4 shadow-sm p-4">
+              <h2 class="section-title h5 mb-3">{{ siteText('course.schedule_title') }}</h2>
+              @foreach ($course->sessions as $session)
+                <div class="session-card p-3 mb-2">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="session-date">
+                      <div class="day">{{ $session->starts_at->format('d') }}</div>
+                      <div class="mon">{{ $session->starts_at->translatedFormat('M') }}</div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <div class="fw-bold">{{ $session->starts_at->translatedFormat('l — g:i A') }}</div>
+                      <div class="small text-muted">
+                        <span>🕒 {{ $session->duration_minutes }} {{ siteText('course.minutes') }}</span>
+                        @if (! $session->isOnline() && $session->localized('location'))
+                          <span class="ms-2">📍 {{ $session->localized('location') }}</span>
+                        @elseif ($session->isOnline())
+                          <span class="ms-2">💻 {{ siteText('course.online') }}</span>
+                        @endif
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              @endforeach
+            </div>
+          @endif
         </div>
 
-        {{-- Sessions + booking --}}
-        <div class="col-lg-7" id="sessions">
-          <h2 class="section-title h5 mb-3">{{ siteText('course.sessions_title') }}</h2>
-
-          @forelse ($course->sessions as $session)
-            <div class="session-card p-3 mb-3">
-              <div class="d-flex align-items-center gap-3">
-                <div class="session-date">
-                  <div class="day">{{ $session->starts_at->format('d') }}</div>
-                  <div class="mon">{{ $session->starts_at->translatedFormat('M') }}</div>
-                </div>
-                <div class="flex-grow-1">
-                  <div class="fw-bold">{{ $session->starts_at->translatedFormat('l — g:i A') }}</div>
-                  <div class="small text-muted">
-                    <span>🕒 {{ $session->duration_minutes }} {{ siteText('course.minutes') }}</span>
-                    @if (! $session->isOnline() && $session->localized('location'))
-                      <span class="ms-2">📍 {{ $session->localized('location') }}</span>
-                    @elseif ($session->isOnline())
-                      <span class="ms-2">💻 {{ siteText('course.online') }}</span>
-                    @endif
-                  </div>
-                </div>
-                <div class="text-end">
-                  @if ($session->seatsLeft() === null)
-                    <span class="badge bg-secondary">{{ siteText('course.unlimited_seats') }}</span>
-                  @elseif ($session->isFull())
-                    <span class="badge bg-danger">{{ siteText('course.full') }}</span>
-                  @else
-                    <span class="badge bg-success">{{ $session->seatsLeft() }} {{ siteText('course.seats_left') }}</span>
-                  @endif
-                </div>
-              </div>
-
-              @if (! $session->isFull())
-                <div class="mt-3">
-                  <button class="btn btn-sm btn-main" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#book{{ $session->id }}" aria-expanded="false">
-                    {{ siteText('course.book_now') }}
-                  </button>
-                  <div class="collapse mt-3" id="book{{ $session->id }}">
-                    <form action="{{ route('bookings.store') }}" method="POST" class="small border-top pt-3">
-                      @csrf
-                      <input type="hidden" name="course_session_id" value="{{ $session->id }}" />
-                      <div class="row g-2">
-                        <div class="col-md-6">
-                          <label class="form-label">{{ siteText('booking.name') }}</label>
-                          <input type="text" name="name" class="form-control form-control-sm" required />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">{{ siteText('booking.phone') }}</label>
-                          <input type="tel" name="phone" class="form-control form-control-sm" required />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">{{ siteText('booking.email') }}</label>
-                          <input type="email" name="email" class="form-control form-control-sm" />
-                        </div>
-                        <div class="col-md-6">
-                          <label class="form-label">{{ siteText('booking.notes') }}</label>
-                          <input type="text" name="notes" class="form-control form-control-sm" />
-                        </div>
-                      </div>
-                      <button type="submit" class="btn btn-main btn-sm mt-3">{{ siteText('booking.submit') }}</button>
-                    </form>
-                  </div>
-                </div>
+        {{-- Enrollment form --}}
+        <div class="col-lg-5" id="enroll">
+          <div class="bg-white rounded-4 shadow-sm p-4">
+            <h2 class="section-title h5 mb-3">{{ siteText('course.enroll_title') }}</h2>
+            @if ($course->enrollmentOpen())
+              @if ($course->daysLeftLabel())
+                <div class="alert alert-warning small">⏳ {{ siteText('course.hurry') }} — {{ $course->daysLeftLabel() }}</div>
               @endif
-            </div>
-          @empty
-            <div class="alert alert-light border">{{ siteText('course.no_sessions') }}</div>
-          @endforelse
+              @if ($course->type->value === 'online')
+                <div class="alert alert-info small">{{ siteText('booking.online_note') }}</div>
+              @endif
+              <form action="{{ route('bookings.store') }}" method="POST" class="small">
+                @csrf
+                <input type="hidden" name="course_id" value="{{ $course->id }}" />
+                <div class="mb-2">
+                  <label class="form-label">{{ siteText('booking.name') }}</label>
+                  <input type="text" name="name" class="form-control" value="{{ old('name') }}" required />
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">{{ siteText('booking.phone') }}</label>
+                  <input type="tel" name="phone" class="form-control" value="{{ old('phone') }}" required />
+                </div>
+                <div class="mb-2">
+                  <label class="form-label">{{ siteText('booking.email') }}</label>
+                  <input type="email" name="email" class="form-control" value="{{ old('email') }}" />
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">{{ siteText('booking.notes') }}</label>
+                  <textarea name="notes" rows="2" class="form-control">{{ old('notes') }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-main w-100">{{ siteText('course.enroll_now') }}</button>
+              </form>
+            @else
+              <div class="alert alert-secondary small mb-0">{{ siteText('course.enroll_closed') }}</div>
+            @endif
+          </div>
 
-          <div class="mt-4">
+          <div class="mt-3 text-center">
             <a href="{{ route('courses.index') }}" class="btn btn-outline-secondary btn-sm">{{ siteText('buttons.back_home') }}</a>
           </div>
         </div>

@@ -8,8 +8,13 @@ use App\Utilities\Traits\HasLocalizedAttributes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * A scheduled class (date/time) within a course — the course's schedule.
+ * For online courses it may carry an auto-created Zoom meeting.
+ * Attendance is NOT tracked here (see the Attendance model), so a course
+ * can run many sessions over months while students enroll once.
+ */
 #[ObservedBy(CourseSessionObserver::class)]
 class CourseSession extends Model
 {
@@ -19,7 +24,6 @@ class CourseSession extends Model
         'course_id',
         'starts_at',
         'duration_minutes',
-        'capacity',
         'location_ar',
         'location_en',
         'zoom_meeting_id',
@@ -31,7 +35,6 @@ class CourseSession extends Model
     protected $casts = [
         'starts_at' => 'datetime',
         'duration_minutes' => 'integer',
-        'capacity' => 'integer',
         'is_active' => 'boolean',
     ];
 
@@ -40,39 +43,8 @@ class CourseSession extends Model
         return $this->belongsTo(Course::class);
     }
 
-    public function bookings(): HasMany
-    {
-        return $this->hasMany(Booking::class);
-    }
-
     public function isOnline(): bool
     {
         return $this->course?->type === CourseTypeEnum::ONLINE;
-    }
-
-    /**
-     * Bookings that occupy a seat (everything except cancelled).
-     */
-    public function activeBookingsCount(): int
-    {
-        return $this->bookings()
-            ->where('status', '!=', \App\Enum\Booking\BookingStatusEnum::CANCELLED->value)
-            ->count();
-    }
-
-    public function seatsLeft(): ?int
-    {
-        if ($this->capacity === null) {
-            return null; // unlimited
-        }
-
-        return max(0, $this->capacity - $this->activeBookingsCount());
-    }
-
-    public function isFull(): bool
-    {
-        $left = $this->seatsLeft();
-
-        return $left !== null && $left <= 0;
     }
 }

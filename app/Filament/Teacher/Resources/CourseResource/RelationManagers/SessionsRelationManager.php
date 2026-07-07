@@ -6,9 +6,11 @@ use App\Enum\Course\CourseTypeEnum;
 use App\Models\CourseSession;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Carbon;
 
 class SessionsRelationManager extends RelationManager
 {
@@ -31,8 +33,6 @@ class SessionsRelationManager extends RelationManager
                 ->required()->seconds(false)->native(false),
             Forms\Components\TextInput::make('duration_minutes')->label(trans('panel.session.duration'))
                 ->numeric()->default(60)->suffix(trans('panel.session.minutes')),
-            Forms\Components\TextInput::make('capacity')->label(trans('panel.session.capacity'))
-                ->numeric()->helperText(trans('panel.session.capacity_hint')),
             Forms\Components\Toggle::make('is_active')->label(trans('panel.common.is_active'))->default(true),
 
             // Offline: location
@@ -57,10 +57,6 @@ class SessionsRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('starts_at')->label(trans('panel.session.starts_at'))->dateTime('Y-m-d H:i')->sortable(),
                 Tables\Columns\TextColumn::make('duration_minutes')->label(trans('panel.session.duration'))->suffix(' '.trans('panel.session.minutes')),
-                Tables\Columns\TextColumn::make('capacity')->label(trans('panel.session.capacity'))
-                    ->formatStateUsing(fn ($state, CourseSession $record) => $state === null
-                        ? trans('panel.session.unlimited')
-                        : ($record->seatsLeft().' / '.$state)),
                 Tables\Columns\IconColumn::make('zoom_join_url')->label('Zoom')->boolean()
                     ->trueIcon('heroicon-o-video-camera')->falseIcon('heroicon-o-minus')
                     ->visible(fn (): bool => $this->isOnline()),
@@ -68,6 +64,53 @@ class SessionsRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()->label(trans('panel.session.add')),
+
+                // Generate a whole run of sessions at once (e.g. weekly for N weeks)
+                // instead of adding them one by one.
+                Tables\Actions\Action::make('generate')
+                    ->label(trans('panel.session.generate'))
+                    ->icon('heroicon-o-squares-plus')
+                    ->color('success')
+                    ->modalHeading(trans('panel.session.generate'))
+                    ->modalSubmitActionLabel(trans('panel.session.generate'))
+                    ->form([
+                        Forms\Components\DateTimePicker::make('starts_at')->label(trans('panel.session.first_at'))
+                            ->required()->seconds(false)->native(false),
+                        Forms\Components\TextInput::make('count')->label(trans('panel.session.count'))
+                            ->numeric()->minValue(1)->maxValue(60)->default(8)->required(),
+                        Forms\Components\Select::make('interval_days')->label(trans('panel.session.repeat'))
+                            ->options([
+                                1 => trans('panel.session.daily'),
+                                2 => trans('panel.session.every_2_days'),
+                                7 => trans('panel.session.weekly'),
+                                14 => trans('panel.session.biweekly'),
+                            ])->default(7)->required()->native(false),
+                        Forms\Components\TextInput::make('duration_minutes')->label(trans('panel.session.duration'))
+                            ->numeric()->default(60)->suffix(trans('panel.session.minutes')),
+                        Forms\Components\Group::make([
+                            Forms\Components\TextInput::make('location_ar')->label(trans('panel.session.location').' ('.trans('panel.common.ar').')'),
+                            Forms\Components\TextInput::make('location_en')->label(trans('panel.session.location').' ('.trans('panel.common.en').')'),
+                        ])->columns(2)->visible(fn (): bool => ! $this->isOnline()),
+                    ])
+                    ->action(function (array $data): void {
+                        $start = Carbon::parse($data['starts_at']);
+                        $interval = (int) $data['interval_days'];
+                        $count = (int) $data['count'];
+
+                        for ($i = 0; $i < $count; $i++) {
+                            $this->getOwnerRecord()->sessions()->create([
+                                'starts_at' => $start->copy()->addDays($i * $interval),
+                                'duration_minutes' => $data['duration_minutes'] ?? 60,
+                                'location_ar' => $data['location_ar'] ?? null,
+                                'location_en' => $data['location_en'] ?? null,
+                                'is_active' => true,
+                            ]);
+                        }
+
+                        Notification::make()->success()
+                            ->title(trans('panel.session.generated', ['count' => $count]))
+                            ->send();
+                    }),
             ])
             ->actions([
                 Tables\Actions\Action::make('zoom')->label('Zoom')->icon('heroicon-o-video-camera')->color('success')

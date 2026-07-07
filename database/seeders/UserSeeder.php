@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Course;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -15,9 +16,10 @@ class UserSeeder extends Seeder
     {
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Ensure both roles exist (super_admin is normally created by Shield).
-        $superAdmin = Role::findOrCreate('super_admin', 'web');
+        // Ensure the roles exist (super_admin is normally created by Shield).
+        Role::findOrCreate('super_admin', 'web');
         $teacherRole = Role::findOrCreate('teacher', 'web');
+        Role::findOrCreate('supervisor', 'web');
 
         // The teacher panel only exposes the Course resource behind a policy,
         // so grant the teacher role every "course" permission.
@@ -57,7 +59,23 @@ class UserSeeder extends Seeder
         );
         $teacher->syncRoles(['teacher']);
 
-        Teacher::query()->whereNull('user_id')->orderBy('id')->first()
-            ?->update(['user_id' => $teacher->id]);
+        $teacherRecord = Teacher::query()->whereNull('user_id')->orderBy('id')->first();
+        $teacherRecord?->update(['user_id' => $teacher->id]);
+
+        // Attendance supervisor account -> /supervisor panel.
+        $supervisor = User::updateOrCreate(
+            ['email' => 'supervisor@ibneljezery.test'],
+            [
+                'name' => 'مشرف الحضور',
+                'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+            ],
+        );
+        $supervisor->syncRoles(['supervisor']);
+
+        // Assign a teacher + supervisor to any course still missing them, so the
+        // teacher and supervisor panels have data to work with out of the box.
+        Course::query()->whereNull('teacher_id')->update(['teacher_id' => $teacherRecord?->id]);
+        Course::query()->whereNull('supervisor_id')->update(['supervisor_id' => $supervisor->id]);
     }
 }

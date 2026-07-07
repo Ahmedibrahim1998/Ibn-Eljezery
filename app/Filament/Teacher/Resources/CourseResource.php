@@ -63,6 +63,12 @@ class CourseResource extends Resource
                 Forms\Components\Textarea::make('description_en')->label(trans('panel.course.description').' ('.trans('panel.common.en').')')->rows(3),
                 Forms\Components\TextInput::make('badge_ar')->label(trans('panel.course.badge').' ('.trans('panel.common.ar').')'),
                 Forms\Components\TextInput::make('badge_en')->label(trans('panel.course.badge').' ('.trans('panel.common.en').')'),
+                Forms\Components\TextInput::make('duration_months')->label(trans('panel.course.duration_months'))
+                    ->numeric()->minValue(1)->maxValue(60)->suffix(trans('panel.course.months'))
+                    ->helperText(trans('panel.course.duration_hint')),
+                Forms\Components\DatePicker::make('enrollment_deadline')->label(trans('panel.course.enrollment_deadline'))
+                    ->native(false)->minDate(today())
+                    ->helperText(trans('panel.course.enrollment_deadline_hint')),
             ])->columns(2),
 
             Forms\Components\Section::make(trans('panel.course.items_section'))->schema([

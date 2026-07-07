@@ -2,7 +2,6 @@
 
 namespace App\Filament\Teacher\Widgets;
 
-use App\Enum\Booking\AttendanceEnum;
 use App\Enum\Booking\BookingStatusEnum;
 use App\Filament\Teacher\Resources\CourseResource;
 use App\Models\Booking;
@@ -26,18 +25,16 @@ class TeacherStats extends BaseWidget
             ->where('starts_at', '>=', now())
             ->count();
 
-        $bookingsQuery = fn () => Booking::whereHas('session.course', fn (Builder $q) => $q->where('teacher_id', $teacherId));
+        $bookingsQuery = fn () => Booking::whereHas('course', fn (Builder $q) => $q->where('teacher_id', $teacherId));
 
         $pending = $bookingsQuery()->where('status', BookingStatusEnum::PENDING->value)->count();
         $confirmed = $bookingsQuery()->where('status', BookingStatusEnum::CONFIRMED->value)->count();
-        $present = $bookingsQuery()->where('attendance', AttendanceEnum::PRESENT->value)->count();
 
         return [
             Stat::make(trans('panel.widgets.teacher_courses'), $courses)->icon('heroicon-m-book-open')->color('info'),
             Stat::make(trans('panel.widgets.upcoming_sessions'), $upcoming)->icon('heroicon-m-calendar-days')->color('info'),
             Stat::make(trans('panel.widgets.pending_bookings'), $pending)->icon('heroicon-m-clock')->color($pending > 0 ? 'warning' : 'gray'),
             Stat::make(trans('panel.widgets.confirmed_bookings'), $confirmed)->icon('heroicon-m-check-circle')->color('success'),
-            Stat::make(trans('panel.widgets.attended_sessions'), $present)->icon('heroicon-m-hand-raised')->color('success'),
         ];
     }
 }

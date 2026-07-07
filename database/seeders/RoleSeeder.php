@@ -9,7 +9,8 @@ class RoleSeeder extends Seeder
 {
     public function run(): void
     {
-        // super_admin is created by Shield; ensure the teacher role exists too.
+        // super_admin is created by Shield; ensure the extra roles exist too.
         Role::findOrCreate('teacher', 'web');
+        Role::findOrCreate('supervisor', 'web');
     }
 }

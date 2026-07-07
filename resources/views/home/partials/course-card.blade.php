@@ -1,5 +1,10 @@
 {{-- Expects: $item (Course) --}}
 <div class="pricing-card p-4 h-100 shadow-sm">
+  @if ($item->daysLeftLabel())
+    <span class="badge bg-danger mb-2 d-inline-flex align-items-center gap-1">
+      <span aria-hidden="true">⏳</span> {{ siteText('course.hurry') }} — {{ $item->daysLeftLabel() }}
+    </span>
+  @endif
   @if ($item->localized('badge'))
     <span class="badge {{ $item->type->value === 'online' ? 'bg-main' : 'bg-main-subtle text-main' }} mb-2">{{ $item->localized('badge') }}</span>
   @endif
