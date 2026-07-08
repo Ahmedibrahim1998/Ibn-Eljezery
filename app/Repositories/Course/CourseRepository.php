@@ -22,12 +22,12 @@ class CourseRepository extends Repository implements CourseRepositoryInterface
 
     public function activeOrdered(): Collection
     {
-        return $this->getModel()->newQuery()->active()->enrollmentOpen()->ordered()->get();
+        return $this->getModel()->newQuery()->with('teacher')->active()->enrollmentOpen()->ordered()->get();
     }
 
     public function activeOrderedLimited(int $limit): Collection
     {
-        return $this->getModel()->newQuery()->active()->enrollmentOpen()->ordered()->limit($limit)->get();
+        return $this->getModel()->newQuery()->with('teacher')->active()->enrollmentOpen()->ordered()->limit($limit)->get();
     }
 
     public function activeCount(): int
@@ -37,6 +37,6 @@ class CourseRepository extends Repository implements CourseRepositoryInterface
 
     public function activeOrderedPaginated(int $perPage = 12): LengthAwarePaginator
     {
-        return $this->getModel()->newQuery()->active()->enrollmentOpen()->ordered()->paginate($perPage);
+        return $this->getModel()->newQuery()->with('teacher')->active()->enrollmentOpen()->ordered()->paginate($perPage);
     }
 }

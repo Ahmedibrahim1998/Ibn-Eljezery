@@ -8,7 +8,12 @@
   @if ($item->localized('badge'))
     <span class="badge {{ $item->type->value === 'online' ? 'bg-main' : 'bg-main-subtle text-main' }} mb-2">{{ $item->localized('badge') }}</span>
   @endif
-  <h5 class="mb-2">{{ $item->localized('title') }}</h5>
+  <h5 class="mb-1">{{ $item->localized('title') }}</h5>
+  @if ($item->teacher)
+    <a href="{{ route('teachers.show', $item->teacher) }}" class="d-inline-flex align-items-center gap-1 text-decoration-none text-muted small mb-2">
+      <span aria-hidden="true">👤</span> {{ $item->teacher->localized('name') }}
+    </a>
+  @endif
   <p class="text-muted small mb-3">{{ $item->localized('description') }}</p>
   <ul class="small mb-3">
     @foreach ($item->localizedItems() as $line)
