@@ -170,6 +170,7 @@ return [
         'level' => 'Memorization level',
         'program' => 'Requested program',
         'course' => 'Requested course',
+        'course_requests' => 'Registration requests',
         'message' => 'Message',
         'source' => 'Source',
         'status' => 'Status',
