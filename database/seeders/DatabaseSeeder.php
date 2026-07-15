@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             TeacherSeeder::class,
             RoleSeeder::class,
             ProgramSeeder::class,
+            CourseCategorySeeder::class,
             CourseSeeder::class,
 
             // Accounts (also links courses to a teacher + supervisor) — needs courses.

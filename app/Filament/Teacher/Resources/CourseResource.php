@@ -20,17 +20,17 @@ class CourseResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return trans('panel.course.plural');
+        return trans('panel.group.mine');
     }
 
     public static function getModelLabel(): string
     {
-        return trans('panel.course.label');
+        return trans('panel.group.label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('panel.course.plural');
+        return trans('panel.group.mine');
     }
 
     /**
@@ -54,9 +54,9 @@ class CourseResource extends Resource
     {
         return $form->schema([
             Forms\Components\Section::make(trans('panel.course.section'))->schema([
-                Forms\Components\Select::make('type')->label(trans('panel.course.type'))
-                    ->options(CourseTypeEnum::class)->required()->default(CourseTypeEnum::OFFLINE)
-                    ->native(false),
+                Forms\Components\Select::make('course_category_id')->label(trans('panel.group.category'))
+                    ->relationship('category', 'title_ar')->searchable()->preload()->required()->native(false)
+                    ->helperText(trans('panel.group.category_hint')),
                 Forms\Components\TextInput::make('title_ar')->label(trans('panel.course.title').' ('.trans('panel.common.ar').')')->required()->maxLength(255),
                 Forms\Components\TextInput::make('title_en')->label(trans('panel.course.title').' ('.trans('panel.common.en').')')->maxLength(255),
                 Forms\Components\Textarea::make('description_ar')->label(trans('panel.course.description').' ('.trans('panel.common.ar').')')->rows(3),
@@ -91,6 +91,7 @@ class CourseResource extends Resource
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
             ->columns([
+                Tables\Columns\TextColumn::make('category.title_ar')->label(trans('panel.group.category'))->sortable()->placeholder('—'),
                 Tables\Columns\TextColumn::make('title_ar')->label(trans('panel.course.title'))->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('type')->label(trans('panel.course.type'))->badge(),
                 Tables\Columns\IconColumn::make('is_active')->label(trans('panel.common.is_active'))->boolean(),

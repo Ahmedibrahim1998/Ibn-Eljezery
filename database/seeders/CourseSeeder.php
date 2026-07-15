@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enum\Course\CourseTypeEnum;
 use App\Models\Course;
+use App\Models\CourseCategory;
 use Illuminate\Database\Seeder;
 
 class CourseSeeder extends Seeder
@@ -14,8 +15,13 @@ class CourseSeeder extends Seeder
             return;
         }
 
+        // Parent courses to attach the seeded groups to.
+        $offlineCategoryId = CourseCategory::where('type', CourseTypeEnum::OFFLINE->value)->orderBy('sort_order')->value('id');
+        $onlineCategoryId = CourseCategory::where('type', CourseTypeEnum::ONLINE->value)->orderBy('sort_order')->value('id');
+
         $courses = [
             [
+                'course_category_id' => $offlineCategoryId,
                 'type' => CourseTypeEnum::OFFLINE,
                 'title_ar' => 'دورات حضورية (أوفلاين)', 'title_en' => 'In-person Courses (Offline)',
                 'description_ar' => 'لأبناء وبنات الحي، في قاعات مجهّزة داخل المركز، بإشراف مباشر من المعلمين.',
@@ -30,6 +36,7 @@ class CourseSeeder extends Seeder
                 ],
             ],
             [
+                'course_category_id' => $onlineCategoryId,
                 'type' => CourseTypeEnum::ONLINE,
                 'title_ar' => 'دورات أونلاين (عن بُعد)', 'title_en' => 'Online Courses (Remote)',
                 'description_ar' => 'دروس مباشرة عبر منصات آمنة، مع تسجيل الحصص وإتاحة متابعتها لولي الأمر.',

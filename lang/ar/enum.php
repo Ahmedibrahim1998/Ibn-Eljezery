@@ -24,6 +24,14 @@ return [
         'cancelled' => 'ملغي',
     ],
 
+    'student_status' => [
+        'regular' => 'عادي',
+        'orphan' => 'يتيم',
+        'poor' => 'فقير',
+        'needy' => 'مسكين',
+        'wealthy' => 'ميسور',
+    ],
+
     'attendance' => [
         'pending' => 'لم يُحدَّد',
         'present' => 'حاضر',

@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\LeadController;
 use App\Http\Controllers\Web\ListingController;
 use App\Http\Controllers\Web\LocaleController;
 use App\Http\Controllers\Web\TeacherController;
+use App\Http\Controllers\Web\TestimonialController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -17,9 +18,13 @@ Route::view('/portal', 'portal')->name('portal');
 // "View all" listing pages
 Route::get('/teachers', [ListingController::class, 'teachers'])->name('teachers.index');
 Route::get('/programs', [ListingController::class, 'programs'])->name('programs.index');
-Route::get('/courses', [ListingController::class, 'courses'])->name('courses.index');
 Route::get('/testimonials', [ListingController::class, 'testimonials'])->name('testimonials.index');
 Route::get('/faqs', [ListingController::class, 'faqs'])->name('faqs.index');
+
+// Courses: type (offline/online) -> courses -> groups (by teacher) -> group detail
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::get('/courses/type/{type}', [CourseController::class, 'type'])->name('courses.type');
+Route::get('/courses/category/{courseCategory}', [CourseController::class, 'category'])->name('courses.category');
 
 // Detail pages
 Route::get('/teachers/{teacher}', [TeacherController::class, 'show'])->name('teachers.show');
@@ -28,7 +33,13 @@ Route::post('/bookings', [BookingController::class, 'store'])
     ->middleware('throttle:10,1')
     ->name('bookings.store');
 
-Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
+Route::post('/leads', [LeadController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('leads.store');
+
+Route::post('/testimonials', [TestimonialController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('testimonials.store');
 
 Route::get('/locale/{locale}', [LocaleController::class, 'switch'])->name('locale.switch');
 

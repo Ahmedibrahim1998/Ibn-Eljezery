@@ -36,6 +36,8 @@ class StudentCards extends Widget
         $groups = $courses->map(function (Course $course) use (&$totalStudents, &$presentToday, &$paymentDue): array {
             $students = $course->bookings->map(function (Booking $b) use (&$presentToday, &$paymentDue): array {
                 $today = $b->todayAttendance();
+                $attended = $b->attendedDays();
+                $exempt = $b->isExempt();
                 $due = $b->paymentDue();
 
                 if ($today?->checked_out_at) {
@@ -54,13 +56,40 @@ class StudentCards extends Widget
                     $paymentDue++;
                 }
 
+                // Subscription label + color (exempt students never show a payment state).
+                if ($exempt) {
+                    $sub = trans('panel.attendance.exempt');
+                    $subColor = 'gray';
+                } elseif ($attended === 0) {
+                    $sub = '—';
+                    $subColor = 'gray';
+                } elseif ($due) {
+                    $sub = trans('panel.attendance.unpaid');
+                    $subColor = 'danger';
+                } else {
+                    $month = $b->lastPaidMonthLabel();
+                    $sub = $month ? trans('panel.attendance.paid_month', ['month' => $month]) : trans('panel.attendance.up_to_date');
+                    $subColor = 'success';
+                }
+
+                $fmt = fn ($dt): ?string => $dt ? $dt->locale(app()->getLocale())->translatedFormat('g:i A') : null;
+
                 return [
                     'name' => $b->name,
                     'phone' => $b->phone,
-                    'attended' => $b->attendedDays(),
-                    'due' => $due,
+                    'attended' => $attended,
                     'state' => $state,
                     'color' => $color,
+                    'status_label' => $b->student_status?->getLabel(),
+                    'status_color' => $b->student_status?->getColor() ?? 'gray',
+                    'exempt' => $exempt,
+                    'fee' => $exempt || ! $b->monthly_fee
+                        ? null
+                        : number_format((float) $b->monthly_fee, 2).' '.trans('panel.attendance.currency'),
+                    'checked_in' => $fmt($today?->checked_in_at),
+                    'checked_out' => $fmt($today?->checked_out_at),
+                    'sub' => $sub,
+                    'sub_color' => $subColor,
                 ];
             });
 

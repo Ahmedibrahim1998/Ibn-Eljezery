@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
   <title>@yield('title', localizedSetting('brand_name', config('app.name')))</title>
 
   {{-- Bootstrap CSS (RTL/LTR by locale) --}}
@@ -39,9 +40,9 @@
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#hero">{{ siteText('nav.home') }}</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#about">{{ siteText('nav.about') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#teachers">{{ siteText('nav.teachers') }}</a></li>
-          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#programs">{{ siteText('nav.programs') }}</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#courses">{{ siteText('nav.courses') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#programs">{{ siteText('nav.programs') }}</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#teachers">{{ siteText('nav.teachers') }}</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#memorization">{{ siteText('nav.memorization') }}</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#testimonials">{{ siteText('nav.testimonials') }}</a></li>
           <li class="nav-item"><a class="nav-link" href="{{ route('home') }}/#faq">{{ siteText('nav.faq') }}</a></li>
@@ -65,9 +66,8 @@
 
   {{-- Footer --}}
   <footer class="py-3 bg-dark text-white-50 small">
-    <div class="container d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2">
+    <div class="container text-center">
       <span>&copy; {{ date('Y') }} {{ localizedSetting('brand_name') }} - {{ siteText('footer.rights') }}</span>
-      <span>{{ siteText('footer.design') }}</span>
     </div>
   </footer>
 

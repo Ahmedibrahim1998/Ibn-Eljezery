@@ -73,27 +73,27 @@
     </div>
   </section>
 
-  {{-- ===================== Teachers ===================== --}}
-  <section id="teachers" class="section-padding">
+  {{-- ===================== Courses ===================== --}}
+  <section id="courses" class="section-padding">
     <div class="container">
-      <div class="text-center mb-5 teachers-section">
-        <h2 class="section-title mb-3">{{ siteText('sections.teachers_title') }}</h2>
-        <p class="text-muted">{{ siteText('sections.teachers_lead') }}</p>
+      <div class="text-center mb-5">
+        <h2 class="section-title mb-3">{{ siteText('sections.courses_title') }}</h2>
+        <p class="text-muted">{{ siteText('sections.courses_lead') }}</p>
       </div>
-      <div class="row g-4 teachers-section">
-        @foreach ($teachers as $teacher)
-          <div class="col-md-6 col-lg-3">
-            @include('home.partials.teacher-card', ['item' => $teacher])
+      <div class="row g-4 justify-content-center">
+        @foreach (['offline' => '🏛️', 'online' => '💻'] as $t => $icon)
+          <div class="col-md-6 col-lg-5">
+            <a href="{{ route('courses.type', $t) }}" class="text-decoration-none text-reset">
+              <div class="pricing-card p-5 h-100 shadow-sm text-center">
+                <div style="font-size:3rem;line-height:1">{{ $icon }}</div>
+                <h3 class="h4 mt-3 mb-2">{{ siteText('course.' . $t . '_title') }}</h3>
+                <p class="text-muted mb-3">{{ siteText('course.' . $t . '_desc') }}</p>
+                <span class="btn btn-main px-4">{{ siteText('course.browse') }}</span>
+              </div>
+            </a>
           </div>
         @endforeach
       </div>
-      @if ($teachersTotal > $teachers->count())
-        <div class="text-center mt-5">
-          <a href="{{ route('teachers.index') }}" class="btn btn-outline-main px-4">
-            {{ siteText('buttons.view_all') }} ({{ $teachersTotal }})
-          </a>
-        </div>
-      @endif
     </div>
   </section>
 
@@ -121,24 +121,24 @@
     </div>
   </section>
 
-  {{-- ===================== Courses ===================== --}}
-  <section id="courses" class="section-padding">
+  {{-- ===================== Teachers ===================== --}}
+  <section id="teachers" class="section-padding">
     <div class="container">
-      <div class="text-center mb-5">
-        <h2 class="section-title mb-3">{{ siteText('sections.courses_title') }}</h2>
-        <p class="text-muted">{{ siteText('sections.courses_lead') }}</p>
+      <div class="text-center mb-5 teachers-section">
+        <h2 class="section-title mb-3">{{ siteText('sections.teachers_title') }}</h2>
+        <p class="text-muted">{{ siteText('sections.teachers_lead') }}</p>
       </div>
-      <div class="row g-4">
-        @foreach ($courses as $course)
-          <div class="col-md-6">
-            @include('home.partials.course-card', ['item' => $course])
+      <div class="row g-4 teachers-section">
+        @foreach ($teachers as $teacher)
+          <div class="col-md-6 col-lg-3">
+            @include('home.partials.teacher-card', ['item' => $teacher])
           </div>
         @endforeach
       </div>
-      @if ($coursesTotal > $courses->count())
+      @if ($teachersTotal > $teachers->count())
         <div class="text-center mt-5">
-          <a href="{{ route('courses.index') }}" class="btn btn-outline-main px-4">
-            {{ siteText('buttons.view_all') }} ({{ $coursesTotal }})
+          <a href="{{ route('teachers.index') }}" class="btn btn-outline-main px-4">
+            {{ siteText('buttons.view_all') }} ({{ $teachersTotal }})
           </a>
         </div>
       @endif
@@ -260,7 +260,7 @@
           <ul class="list-unstyled small mb-4 contact-info">
             <li>
               <strong>{{ siteText('contact.phone_label') }}</strong>
-              <a href="https://wa.me/{{ setting('whatsapp_phone') }}" target="_blank" class="text-white text-decoration-underline">{{ setting('whatsapp_phone') }}</a>
+              <a href="{{ waUrl(setting('whatsapp_phone')) }}" target="_blank" rel="noopener" class="text-white text-decoration-underline">{{ setting('whatsapp_phone') }}</a>
             </li>
             <li>
               <strong>{{ siteText('contact.email_label') }}</strong>
@@ -268,7 +268,7 @@
             </li>
             <li><strong>{{ siteText('contact.location_label') }}</strong> {{ localizedSetting('contact_location') }}</li>
           </ul>
-          <a href="https://wa.me/{{ setting('whatsapp_phone') }}" target="_blank" class="btn btn-whatsapp mb-4" aria-label="{{ siteText('contact.whatsapp') }}">
+          <a href="{{ waUrl(setting('whatsapp_phone')) }}" target="_blank" rel="noopener" class="btn btn-whatsapp mb-4" aria-label="{{ siteText('contact.whatsapp') }}">
             <span class="whatsapp-icon" aria-hidden="true">
               <svg viewBox="0 0 32 32" width="20" height="20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path d="M19.11 17.37c-.27-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.27-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.14-1.15-.42-2.19-1.35-.81-.72-1.36-1.6-1.52-1.88-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.27-.45.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.83-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.27-.96.94-.96 2.3 0 1.36.99 2.67 1.13 2.85.14.18 1.95 2.98 4.73 4.18.66.28 1.17.45 1.57.57.66.21 1.26.18 1.74.11.53-.08 1.6-.65 1.83-1.27.23-.62.23-1.15.16-1.27-.07-.12-.25-.2-.52-.34z"/>
@@ -280,11 +280,14 @@
         </div>
         <div class="col-lg-6">
           <div class="contact-card bg-white text-dark p-4 rounded-4 shadow-sm">
-            <h5 class="mb-3">{{ siteText('contact.form_title') }}</h5>
-            @include('home.partials.lead-form', ['source' => 'contact'])
+            <h5 class="mb-1">{{ siteText('review.title') }}</h5>
+            <p class="small text-muted mb-3">{{ siteText('review.subtitle') }}</p>
+            @include('home.partials.review-form')
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  @include('home.partials.package-modal')
 @endsection

@@ -15,6 +15,7 @@ class Course extends Model
     use HasLocalizedAttributes;
 
     protected $fillable = [
+        'course_category_id',
         'teacher_id',
         'supervisor_id',
         'type',
@@ -39,6 +40,27 @@ class Course extends Model
         'duration_months' => 'integer',
         'enrollment_deadline' => 'date',
     ];
+
+    protected static function booted(): void
+    {
+        // A group inherits its type (offline/online) from its parent course.
+        static::saving(function (Course $course): void {
+            if ($course->course_category_id) {
+                $category = $course->relationLoaded('category')
+                    ? $course->category
+                    : CourseCategory::find($course->course_category_id);
+
+                if ($category) {
+                    $course->type = $category->type;
+                }
+            }
+        });
+    }
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(CourseCategory::class, 'course_category_id');
+    }
 
     public function teacher(): BelongsTo
     {

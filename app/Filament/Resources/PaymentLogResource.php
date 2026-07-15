@@ -57,6 +57,10 @@ class PaymentLogResource extends Resource
                     ->badge()->color('primary'),
                 Tables\Columns\TextColumn::make('classes_attended')->label(trans('panel.payment_log.classes_attended'))
                     ->badge()->color('success'),
+                Tables\Columns\TextColumn::make('amount')->label(trans('panel.payment_log.amount'))
+                    ->badge()->color('warning')->placeholder('—')
+                    ->formatStateUsing(fn ($state): string => $state ? number_format((float) $state, 2).' '.trans('panel.attendance.currency') : '—')
+                    ->summarize(\Filament\Tables\Columns\Summarizers\Sum::make()->label(trans('panel.payment_log.total'))->formatStateUsing(fn ($state): string => number_format((float) $state, 2).' '.trans('panel.attendance.currency'))),
                 Tables\Columns\TextColumn::make('supervisor.name')->label(trans('panel.payment_log.supervisor'))
                     ->placeholder('—')->toggleable(),
             ])

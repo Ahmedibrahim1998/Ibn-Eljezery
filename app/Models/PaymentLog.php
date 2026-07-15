@@ -25,12 +25,14 @@ class PaymentLog extends Model
         'student_phone',
         'month_number',
         'classes_attended',
+        'amount',
         'paid_at',
     ];
 
     protected $casts = [
         'month_number' => 'integer',
         'classes_attended' => 'integer',
+        'amount' => 'decimal:2',
         'paid_at' => 'datetime',
     ];
 

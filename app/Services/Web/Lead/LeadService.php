@@ -21,6 +21,11 @@ readonly class LeadService
         $data = $dto->toArray();
         $data['status'] = LeadStatusEnum::NEW->value;
 
+        // Empty course selection ("" / 0) should stay null, not a bad FK.
+        if (empty($data['course_id'])) {
+            $data['course_id'] = null;
+        }
+
         /** @var Lead $lead */
         $lead = $this->leadRepository->create($data);
 

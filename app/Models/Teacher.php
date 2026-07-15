@@ -42,4 +42,21 @@ class Teacher extends Model
     {
         return $this->hasMany(Course::class);
     }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(TeacherAttendance::class);
+    }
+
+    /** Today's attendance row, if any. */
+    public function todayAttendance(): ?TeacherAttendance
+    {
+        return $this->attendances()->whereDate('attended_on', today())->first();
+    }
+
+    /** Total days the teacher was present. */
+    public function attendedDays(): int
+    {
+        return $this->attendances()->whereNotNull('checked_in_at')->count();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services\Web\Home;
 
+use App\Models\Course;
 use App\Models\Setting;
 use App\Repositories\Course\CourseRepositoryInterface;
 use App\Repositories\Faq\FaqRepositoryInterface;
@@ -62,6 +63,13 @@ readonly class HomePageService
 
             'courses' => $this->courses->activeOrderedLimited($limitCourses),
             'coursesTotal' => $this->courses->activeCount(),
+
+            // Enrollable groups, used by the hero form's course picker.
+            'formCourses' => Course::query()
+                ->where('is_active', true)
+                ->enrollmentOpen()
+                ->orderBy('sort_order')
+                ->get(),
 
             'testimonials' => $this->testimonials->activeOrderedLimited($limitTestimonials),
             'testimonialsTotal' => $this->testimonials->activeCount(),

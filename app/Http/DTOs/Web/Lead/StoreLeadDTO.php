@@ -4,6 +4,7 @@ namespace App\Http\DTOs\Web\Lead;
 
 use App\Enum\Lead\LeadSourceEnum;
 use Illuminate\Validation\Rule;
+use WendellAdriel\ValidatedDTO\Casting\IntegerCast;
 use WendellAdriel\ValidatedDTO\ValidatedDTO;
 
 class StoreLeadDTO extends ValidatedDTO
@@ -19,6 +20,8 @@ class StoreLeadDTO extends ValidatedDTO
     public ?string $level;
 
     public ?string $program;
+
+    public ?int $course_id;
 
     public ?string $message;
 
@@ -36,6 +39,7 @@ class StoreLeadDTO extends ValidatedDTO
             'age_group' => ['nullable', 'string', 'max:255'],
             'level' => ['nullable', 'string', 'max:255'],
             'program' => ['nullable', 'string', 'max:255'],
+            'course_id' => ['nullable', 'required_if:source,hero', 'integer', 'exists:courses,id'],
             'message' => ['nullable', 'string', 'max:2000'],
             'source' => ['required', Rule::in(LeadSourceEnum::values())],
         ];
@@ -57,6 +61,8 @@ class StoreLeadDTO extends ValidatedDTO
      */
     protected function casts(): array
     {
-        return [];
+        return [
+            'course_id' => new IntegerCast(),
+        ];
     }
 }

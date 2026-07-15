@@ -20,6 +20,21 @@ if (! function_exists('localizedColumn')) {
     }
 }
 
+if (! function_exists('waUrl')) {
+    /**
+     * Build a WhatsApp (wa.me) link from any phone number. Strips spaces,
+     * dashes and a leading "+"/"00" so "+20 100-123 4567" => wa.me/201001234567.
+     */
+    function waUrl(?string $phone): string
+    {
+        // Keep only digits (drops "+", spaces and dashes). The number should
+        // already include its country code, exactly as WhatsApp expects.
+        $digits = preg_replace('/\D+/', '', (string) $phone);
+
+        return 'https://wa.me/'.$digits;
+    }
+}
+
 if (! function_exists('setting')) {
     /**
      * Read a site setting by key (cached).

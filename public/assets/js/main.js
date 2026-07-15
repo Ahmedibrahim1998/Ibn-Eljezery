@@ -1,63 +1,85 @@
-// ضبط سنة الفوتر تلقائيًا
-const yearSpan = document.getElementById("year");
-if (yearSpan) {
-  yearSpan.textContent = new Date().getFullYear();
+// ────────────── AJAX form submission (no page reload) ──────────────
+
+// يعرض رسالة نجاح/خطأ داخل النموذج
+function showFormAlert(form, type, message) {
+  const box = form.querySelector(".form-message");
+  if (!box) return;
+  box.classList.remove("d-none", "alert-success", "alert-danger");
+  box.classList.add(type === "success" ? "alert-success" : "alert-danger");
+  box.textContent = message;
 }
 
-// دالة مساعدة لعرض رسالة في النماذج
-function showFormMessage(form, type, message) {
-  const msgEl = form.querySelector(".form-message");
-  if (!msgEl) return;
-  msgEl.classList.remove("d-none", "text-success", "text-danger");
-  msgEl.classList.add(type === "success" ? "text-success" : "text-danger");
-  msgEl.textContent = message;
+// تفعيل/إيقاف حالة التحميل على زر الإرسال
+function setFormLoading(form, loading) {
+  const btn = form.querySelector('button[type="submit"]');
+  if (!btn) return;
+  btn.disabled = loading;
+  const spinner = btn.querySelector(".spinner-border");
+  if (spinner) spinner.classList.toggle("d-none", !loading);
 }
 
-// التعامل مع نموذج الهيرو
-const heroForm = document.getElementById("heroLeadForm");
-if (heroForm) {
-  heroForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    showFormMessage(
-      heroForm,
-      "success",
-      "تم استلام طلبك بنجاح، سنتواصل معك قريبًا إن شاء الله."
-    );
-    heroForm.reset();
-  });
-}
+async function handleAjaxForm(e) {
+  e.preventDefault();
+  const form = e.currentTarget;
 
-// التعامل مع نموذج الاتصال
-const contactForm = document.getElementById("contactForm");
-if (contactForm) {
-  contactForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    showFormMessage(
-      contactForm,
-      "success",
-      "تم إرسال طلبك، ستقوم إدارة المركز بالتواصل معك قريبًا."
-    );
-    contactForm.reset();
-  });
-}
+  const box = form.querySelector(".form-message");
+  if (box) box.classList.add("d-none");
+  setFormLoading(form, true);
 
-// عند الضغط على زر "اختر هذه الباقة" يتم تعبئة اختيار البرنامج في نموذج الاتصال
-const packageButtons = document.querySelectorAll(".choose-package-btn");
-const packageSelect = document.getElementById("packageSelect");
+  const token = document
+    .querySelector('meta[name="csrf-token"]')
+    ?.getAttribute("content");
 
-if (packageButtons && packageSelect) {
-  packageButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const pkg = btn.getAttribute("data-package");
-      if (pkg) {
-        packageSelect.value = pkg;
-        // سكرول بسيط لقسم التواصل
-        const contactSection = document.getElementById("contact");
-        if (contactSection) {
-          contactSection.scrollIntoView({ behavior: "smooth" });
-        }
-      }
+  try {
+    const res = await fetch(form.action, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+        ...(token ? { "X-CSRF-TOKEN": token } : {}),
+      },
+      body: new FormData(form),
     });
+
+    let data = {};
+    try {
+      data = await res.json();
+    } catch (_) {
+      /* استجابة غير JSON */
+    }
+
+    if (res.ok && data.success !== false) {
+      showFormAlert(form, "success", data.message || "تم بنجاح.");
+      if (form.dataset.reset) form.reset();
+    } else {
+      let msg = data.message || "حدث خطأ، برجاء المحاولة مرة أخرى.";
+      if (data.errors) {
+        const first = Object.values(data.errors)[0];
+        if (Array.isArray(first) && first.length) msg = first[0];
+      }
+      showFormAlert(form, "danger", msg);
+    }
+  } catch (err) {
+    showFormAlert(form, "danger", "تعذّر الاتصال بالخادم، برجاء المحاولة مرة أخرى.");
+  } finally {
+    setFormLoading(form, false);
+  }
+}
+
+document.querySelectorAll("form.ajax-form").forEach((form) => {
+  form.addEventListener("submit", handleAjaxForm);
+});
+
+// ────────────── تعبئة اسم الباقة داخل المودال ──────────────
+const packageModal = document.getElementById("packageModal");
+if (packageModal) {
+  packageModal.addEventListener("show.bs.modal", (event) => {
+    const btn = event.relatedTarget;
+    const pkg = btn ? btn.getAttribute("data-package") : "";
+    const nameEl = packageModal.querySelector("#packageModalName");
+    const programInput = packageModal.querySelector("#packageModalProgram");
+    if (nameEl) nameEl.textContent = pkg || "";
+    if (programInput) programInput.value = pkg || "";
   });
 }
 

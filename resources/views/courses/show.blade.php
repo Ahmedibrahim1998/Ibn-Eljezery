@@ -95,9 +95,10 @@
               @if ($course->type->value === 'online')
                 <div class="alert alert-info small">{{ siteText('booking.online_note') }}</div>
               @endif
-              <form action="{{ route('bookings.store') }}" method="POST" class="small">
+              <form action="{{ route('bookings.store') }}" method="POST" class="small ajax-form" data-reset="1">
                 @csrf
                 <input type="hidden" name="course_id" value="{{ $course->id }}" />
+                <div class="form-message alert d-none small mb-3" role="alert"></div>
                 <div class="mb-2">
                   <label class="form-label">{{ siteText('booking.name') }}</label>
                   <input type="text" name="name" class="form-control" value="{{ old('name') }}" required />
@@ -114,7 +115,10 @@
                   <label class="form-label">{{ siteText('booking.notes') }}</label>
                   <textarea name="notes" rows="2" class="form-control">{{ old('notes') }}</textarea>
                 </div>
-                <button type="submit" class="btn btn-main w-100">{{ siteText('course.enroll_now') }}</button>
+                <button type="submit" class="btn btn-main w-100">
+                  <span class="btn-label">{{ siteText('course.enroll_now') }}</span>
+                  <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
               </form>
             @else
               <div class="alert alert-secondary small mb-0">{{ siteText('course.enroll_closed') }}</div>

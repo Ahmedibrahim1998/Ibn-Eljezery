@@ -19,7 +19,9 @@ return [
         'form_title' => 'Register Your Interest',
         'form_subtitle' => 'Enter your details and our admissions team will contact you to recommend the most suitable circle.',
         'form_name' => 'Full Name',
-        'form_phone' => 'Mobile Number (WhatsApp)',
+        'form_phone' => 'WhatsApp Number',
+        'form_course' => 'Course you are interested in',
+        'form_course_placeholder' => 'Select a course',
         'form_age' => 'Approximate Age',
         'form_age_placeholder' => 'Select Age Group',
         'form_level' => 'Current Memorization Level',
@@ -53,6 +55,13 @@ return [
         'choose' => 'Choose This Package',
     ],
 
+    'package_modal' => [
+        'title' => 'Register for a package',
+        'subtitle' => 'Enter your details to register for:',
+        'submit' => 'Send registration request',
+        'close' => 'Close',
+    ],
+
     'buttons' => [
         'view_all' => 'View All',
         'back_home' => 'Back to Home',
@@ -78,6 +87,19 @@ return [
         'total_duration' => 'Course duration',
         'hurry' => 'Hurry and enroll',
         'enroll_closed' => 'Enrollment for this course has closed.',
+        'offline_title' => 'In-person Courses',
+        'online_title' => 'Online Courses',
+        'offline_desc' => 'Classes at the center under direct teacher supervision.',
+        'online_desc' => 'Live remote classes you can attend from anywhere.',
+        'browse' => 'Browse courses',
+        'courses_count' => 'course(s)',
+        'groups_count' => 'group(s)',
+        'groups_title' => 'Available groups',
+        'no_courses' => 'No courses available in this section yet.',
+        'no_groups' => 'No groups available in this course yet.',
+        'group_details' => 'Details & enrollment',
+        'back_types' => 'Back to course types',
+        'back_courses' => 'Back to courses',
         'duration' => 'Duration',
         'minutes' => 'min',
         'seats_left' => 'seats left',
@@ -88,7 +110,7 @@ return [
     'booking' => [
         'title' => 'Book this session',
         'name' => 'Full name',
-        'phone' => 'Mobile number',
+        'phone' => 'WhatsApp number',
         'email' => 'Email (optional)',
         'notes' => 'Notes (optional)',
         'submit' => 'Confirm booking',
@@ -101,13 +123,13 @@ return [
     ],
 
     'contact' => [
-        'phone_label' => 'Mobile (WhatsApp):',
+        'phone_label' => 'WhatsApp:',
         'email_label' => 'Email:',
         'location_label' => 'Location:',
         'whatsapp' => 'Contact via WhatsApp',
         'form_title' => 'Quick Registration Form',
         'form_name' => 'Full Name',
-        'form_phone' => 'Mobile Number',
+        'form_phone' => 'WhatsApp Number',
         'form_email' => 'Email (optional)',
         'form_program' => 'Program Selection',
         'form_program_placeholder' => 'Select Program',
@@ -118,10 +140,22 @@ return [
     'forms' => [
         'success_hero' => 'Your request was received successfully. We will contact you soon, God willing.',
         'success_contact' => 'Your request was sent. The center administration will contact you soon.',
+        'error' => 'Could not submit. Please check the fields and try again.',
+    ],
+
+    'review' => [
+        'title' => 'Share your review',
+        'subtitle' => "We'd love to hear about your experience. Your review appears after the admin approves it.",
+        'name' => 'Name',
+        'role' => 'Role',
+        'role_placeholder' => 'Student / Parent ...',
+        'body' => 'Your review or experience',
+        'submit' => 'Send review',
+        'success' => 'Thank you! Your review was received and will appear after admin approval.',
     ],
 
     'footer' => [
         'rights' => 'Ibn Al-Jazari Quran Memorization Center',
-        'design' => 'Design & Development: You can put your name here',
+        'design' => 'Design & Development: Eng Ahmed Ibrahim',
     ],
 ];

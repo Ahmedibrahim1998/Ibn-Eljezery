@@ -14,8 +14,8 @@
       <li>{{ $line }}</li>
     @endforeach
   </ul>
-  <a href="{{ route('home') }}#contact" class="btn {{ $item->is_featured ? 'btn-main' : 'btn-outline-main' }} w-100 choose-package-btn"
-     data-package="{{ $item->localized('title') }}">
+  <button type="button" class="btn {{ $item->is_featured ? 'btn-main' : 'btn-outline-main' }} w-100 choose-package-btn"
+     data-package="{{ $item->localized('title') }}" data-bs-toggle="modal" data-bs-target="#packageModal">
     {{ siteText('programs.choose') }}
-  </a>
+  </button>
 </div>

@@ -62,6 +62,8 @@ class LeadResource extends Resource
                 Forms\Components\TextInput::make('age_group')->label(trans('panel.lead.age_group')),
                 Forms\Components\TextInput::make('level')->label(trans('panel.lead.level')),
                 Forms\Components\TextInput::make('program')->label(trans('panel.lead.program')),
+                Forms\Components\Select::make('course_id')->label(trans('panel.lead.course'))
+                    ->relationship('course', 'title_ar')->searchable()->preload(),
                 Forms\Components\Textarea::make('message')->label(trans('panel.lead.message'))->rows(3)->columnSpanFull(),
             ])->columns(2),
 
@@ -81,6 +83,7 @@ class LeadResource extends Resource
                 Tables\Columns\TextColumn::make('name')->label(trans('panel.lead.name'))->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('phone')->label(trans('panel.lead.phone'))->searchable(),
                 Tables\Columns\TextColumn::make('program')->label(trans('panel.lead.program'))->limit(25),
+                Tables\Columns\TextColumn::make('course.title_ar')->label(trans('panel.lead.course'))->limit(25)->placeholder('—'),
                 Tables\Columns\TextColumn::make('source')->label(trans('panel.lead.source'))->badge(),
                 Tables\Columns\TextColumn::make('status')->label(trans('panel.lead.status'))->badge(),
                 Tables\Columns\TextColumn::make('created_at')->label(trans('panel.lead.date'))->dateTime('Y-m-d H:i')->sortable(),

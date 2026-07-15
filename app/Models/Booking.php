@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enum\Booking\BookingStatusEnum;
+use App\Enum\Booking\StudentStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -22,14 +23,20 @@ class Booking extends Model
         'name',
         'phone',
         'email',
+        'student_status',
+        'monthly_fee',
         'notes',
         'status',
         'months_paid',
+        'last_paid_at',
     ];
 
     protected $casts = [
         'status' => BookingStatusEnum::class,
+        'student_status' => StudentStatusEnum::class,
+        'monthly_fee' => 'decimal:2',
         'months_paid' => 'integer',
+        'last_paid_at' => 'datetime',
     ];
 
     public function course(): BelongsTo
@@ -47,22 +54,49 @@ class Booking extends Model
         return $this->hasMany(PaymentLog::class);
     }
 
-    /** Total attended classes (days). */
+    /**
+     * Total attended CLASSES. A single day may count for one class or two
+     * (a "double" class), so we sum `classes_count` rather than counting rows.
+     */
     public function attendedDays(): int
     {
-        return $this->attendances()->whereNotNull('checked_in_at')->count();
+        return (int) $this->attendances()->whereNotNull('checked_in_at')->sum('classes_count');
     }
 
-    /** How many months (of 8 classes each) have been earned by attendance. */
-    public function monthsEarned(): int
+    /** Whether the student is exempt from subscription fees (orphan / poor). */
+    public function isExempt(): bool
     {
-        return intdiv($this->attendedDays(), self::CLASSES_PER_MONTH);
+        return $this->student_status?->isExempt() ?? false;
     }
 
-    /** A month's subscription is due when more months were earned than paid. */
+    /**
+     * Months of subscription required so far. Payment is UP-FRONT: the first
+     * class already requires month 1, and every further 8 classes requires the
+     * next month (classes 1-8 = month 1, 9-16 = month 2, ...).
+     */
+    public function monthsRequired(): int
+    {
+        $attended = $this->attendedDays();
+
+        return $attended === 0 ? 0 : intdiv($attended - 1, self::CLASSES_PER_MONTH) + 1;
+    }
+
+    /** Payment is due when a required month hasn't been paid — never for exempt students. */
     public function paymentDue(): bool
     {
-        return $this->monthsEarned() > $this->months_paid;
+        if ($this->isExempt()) {
+            return false;
+        }
+
+        return $this->monthsRequired() > $this->months_paid;
+    }
+
+    /** Localized month name of the last recorded payment, e.g. "يناير" (null if none). */
+    public function lastPaidMonthLabel(): ?string
+    {
+        return $this->last_paid_at
+            ? $this->last_paid_at->locale(app()->getLocale())->translatedFormat('F')
+            : null;
     }
 
     /** Today's attendance row, if any. */
@@ -78,6 +112,7 @@ class Booking extends Model
     public function recordPayment(?int $supervisorId = null): PaymentLog
     {
         $this->increment('months_paid');
+        $this->update(['last_paid_at' => now()]);
         $this->loadMissing('course');
 
         return $this->paymentLogs()->create([
@@ -89,6 +124,7 @@ class Booking extends Model
             'student_phone' => $this->phone,
             'month_number' => $this->months_paid,
             'classes_attended' => $this->attendedDays(),
+            'amount' => $this->monthly_fee,
             'paid_at' => now(),
         ]);
     }

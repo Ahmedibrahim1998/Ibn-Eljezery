@@ -38,6 +38,19 @@ class TestimonialResource extends Resource
         return trans('panel.testimonial.plural');
     }
 
+    // Visitor-submitted reviews arrive inactive (pending approval); badge them.
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getModel()::where('is_active', false)->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([

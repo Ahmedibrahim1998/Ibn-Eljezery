@@ -78,11 +78,32 @@ return [
         'is_featured' => 'Featured package',
     ],
 
-    'course' => [
+    'course_category' => [
         'nav' => 'Courses',
         'label' => 'Course',
         'plural' => 'Courses',
         'section' => 'Course details',
+        'type' => 'Type',
+        'title' => 'Course name',
+        'description' => 'Short description',
+        'groups' => 'Groups',
+        'hint' => 'A course is the general subject (e.g. Tajweed), and it contains a group per teacher.',
+    ],
+
+    'group' => [
+        'nav' => 'Groups',
+        'mine' => 'My groups',
+        'label' => 'Group',
+        'plural' => 'Groups',
+        'category' => 'Course (section)',
+        'category_hint' => 'Pick the course this group belongs to — its type (in-person/online) is set from it automatically.',
+    ],
+
+    'course' => [
+        'nav' => 'Courses',
+        'label' => 'Course',
+        'plural' => 'Courses',
+        'section' => 'Group details',
         'items_section' => 'Points',
         'type' => 'Type',
         'title' => 'Title',
@@ -148,6 +169,7 @@ return [
         'age_group' => 'Age group',
         'level' => 'Memorization level',
         'program' => 'Requested program',
+        'course' => 'Requested course',
         'message' => 'Message',
         'source' => 'Source',
         'status' => 'Status',
@@ -227,6 +249,8 @@ return [
         'course' => 'Course',
         'session' => 'Session',
         'check_in' => 'Check in',
+        'check_in_double' => 'Double class',
+        'double_tag' => '(double)',
         'check_out' => 'Check out',
         'checked_in_at' => 'Check-in time',
         'checked_out_at' => 'Check-out time',
@@ -244,7 +268,20 @@ return [
         'unpaid' => 'Payment due',
         'up_to_date' => 'Up to date',
         'mark_paid' => 'Mark paid',
-        'paid_done' => 'Payment recorded.',
+        'paid_done' => 'Recorded payment for :month.',
+        'paid_month' => 'Paid for :month',
+        'student_status' => 'Student status',
+        'student_status_hint' => 'Orphan and poor students are exempt from fees automatically.',
+        'monthly_fee' => 'Monthly fee',
+        'currency' => 'EGP',
+        'exempt' => 'Exempt',
+    ],
+
+    'teacher_attendance' => [
+        'nav' => 'Teacher Attendance',
+        'title' => 'Teacher Attendance',
+        'teacher' => 'Teacher',
+        'courses' => 'Courses',
     ],
 
     'payment_log' => [
@@ -256,6 +293,8 @@ return [
         'course' => 'Course',
         'month_number' => 'Month #',
         'classes_attended' => 'Classes attended',
+        'amount' => 'Amount paid',
+        'total' => 'Total',
         'supervisor' => 'Recorded by',
         'paid_at' => 'Paid at',
     ],

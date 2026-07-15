@@ -34,7 +34,9 @@
             .sv-avatar { width:2.6rem; height:2.6rem; border-radius:9999px; color:#fff; font-weight:700; font-size:1.05rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
             .sv-name { font-weight:600; color:#111827; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
             .sv-phone { font-size:.85rem; color:#6b7280; }
-            .sv-badges { margin-top:.85rem; display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; }
+            .sv-times { margin-top:.6rem; display:flex; flex-wrap:wrap; gap:.35rem 1rem; font-size:.82rem; color:#6b7280; }
+            .dark .sv-times { color:#9ca3af; }
+            .sv-badges { margin-top:.7rem; display:flex; flex-wrap:wrap; align-items:center; gap:.4rem; }
             .sv-empty { border:1px dashed #d1d5db; border-radius:.85rem; padding:2rem; text-align:center; color:#6b7280; }
             .dark .sv-tile, .dark .sv-card { background:rgba(255,255,255,.04); border-color:rgba(255,255,255,.1); }
             .dark .sv-tile .lbl, .dark .sv-phone { color:#9ca3af; }
@@ -101,19 +103,31 @@
                                         {{ trans('panel.attendance.' . $s['state']) }}
                                     </x-filament::badge>
                                 </div>
+
+                                @if ($s['checked_in'] || $s['checked_out'])
+                                    <div class="sv-times">
+                                        @if ($s['checked_in'])
+                                            <span>🟢 {{ trans('panel.attendance.checked_in_at') }}: <strong dir="ltr">{{ $s['checked_in'] }}</strong></span>
+                                        @endif
+                                        @if ($s['checked_out'])
+                                            <span>🔴 {{ trans('panel.attendance.checked_out_at') }}: <strong dir="ltr">{{ $s['checked_out'] }}</strong></span>
+                                        @endif
+                                    </div>
+                                @endif
+
                                 <div class="sv-badges">
+                                    @if ($s['status_label'])
+                                        <x-filament::badge :color="$s['status_color']" icon="heroicon-m-user">
+                                            {{ $s['status_label'] }}
+                                        </x-filament::badge>
+                                    @endif
                                     <x-filament::badge color="success" icon="heroicon-m-calendar-days">
                                         {{ trans('panel.attendance.attended_days') }}: {{ $s['attended'] }}
                                     </x-filament::badge>
-                                    @if ($s['due'])
-                                        <x-filament::badge color="danger" icon="heroicon-m-banknotes">
-                                            {{ trans('panel.attendance.unpaid') }}
-                                        </x-filament::badge>
-                                    @else
-                                        <x-filament::badge color="gray" icon="heroicon-m-check">
-                                            {{ trans('panel.attendance.up_to_date') }}
-                                        </x-filament::badge>
+                                    @if ($s['fee'])
+                                        <x-filament::badge color="gray" icon="heroicon-m-banknotes">{{ $s['fee'] }}</x-filament::badge>
                                     @endif
+                                    <x-filament::badge :color="$s['sub_color']">{{ $s['sub'] }}</x-filament::badge>
                                 </div>
                             </div>
                         @endforeach

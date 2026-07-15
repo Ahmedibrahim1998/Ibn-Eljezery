@@ -24,6 +24,14 @@ return [
         'cancelled' => 'Cancelled',
     ],
 
+    'student_status' => [
+        'regular' => 'Regular',
+        'orphan' => 'Orphan',
+        'poor' => 'Poor',
+        'needy' => 'Needy',
+        'wealthy' => 'Well-off',
+    ],
+
     'attendance' => [
         'pending' => 'Not set',
         'present' => 'Present',

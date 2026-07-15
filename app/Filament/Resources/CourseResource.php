@@ -26,25 +26,26 @@ class CourseResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return trans('panel.course.nav');
+        return trans('panel.group.plural');
     }
 
     public static function getModelLabel(): string
     {
-        return trans('panel.course.label');
+        return trans('panel.group.label');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return trans('panel.course.plural');
+        return trans('panel.group.plural');
     }
 
     public static function form(Form $form): Form
     {
         return $form->schema([
             Forms\Components\Section::make(trans('panel.course.section'))->schema([
-                Forms\Components\Select::make('type')->label(trans('panel.course.type'))
-                    ->options(CourseTypeEnum::class)->required()->default(CourseTypeEnum::OFFLINE),
+                Forms\Components\Select::make('course_category_id')->label(trans('panel.group.category'))
+                    ->relationship('category', 'title_ar')->searchable()->preload()->required()
+                    ->helperText(trans('panel.group.category_hint')),
                 Forms\Components\Select::make('teacher_id')->label(trans('panel.teacher.label'))
                     ->relationship('teacher', 'name_ar')->searchable()->preload(),
                 Forms\Components\Select::make('supervisor_id')->label(trans('panel.supervisor.assign'))
@@ -84,12 +85,14 @@ class CourseResource extends Resource
             ->defaultSort('sort_order')
             ->reorderable('sort_order')
             ->columns([
-                Tables\Columns\TextColumn::make('title_ar')->label(trans('panel.course.title'))->searchable()->sortable(),
+                Tables\Columns\TextColumn::make('category.title_ar')->label(trans('panel.group.category'))->searchable()->sortable()->placeholder('—'),
+                Tables\Columns\TextColumn::make('teacher.name_ar')->label(trans('panel.teacher.label'))->placeholder('—'),
                 Tables\Columns\TextColumn::make('type')->label(trans('panel.course.type'))->badge(),
                 Tables\Columns\IconColumn::make('is_active')->label(trans('panel.common.is_active'))->boolean(),
-                Tables\Columns\TextColumn::make('sort_order')->label(trans('panel.common.sort_order'))->sortable(),
             ])
             ->filters([
+                Tables\Filters\SelectFilter::make('course_category_id')->label(trans('panel.group.category'))
+                    ->relationship('category', 'title_ar'),
                 Tables\Filters\SelectFilter::make('type')->label(trans('panel.course.type'))->options(CourseTypeEnum::class),
                 Tables\Filters\TernaryFilter::make('is_active')->label(trans('panel.common.status_filter')),
             ])

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enum\Lead\LeadSourceEnum;
 use App\Enum\Lead\LeadStatusEnum;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Lead extends Model
 {
@@ -15,6 +16,7 @@ class Lead extends Model
         'age_group',
         'level',
         'program',
+        'course_id',
         'message',
         'source',
         'status',
@@ -24,4 +26,10 @@ class Lead extends Model
         'source' => LeadSourceEnum::class,
         'status' => LeadStatusEnum::class,
     ];
+
+    /** The course the visitor picked (optional). */
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class);
+    }
 }
