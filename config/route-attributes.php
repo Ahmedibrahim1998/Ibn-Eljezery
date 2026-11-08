@@ -3,9 +3,9 @@
 return [
     /*
      *  Automatic registration of routes will only happen if this setting is `true`
-     *  Disabled: this project has no API layer (Blade + Filament only).
+     *  Enabled for the mobile app API only (app/Http/Controllers/Api/V1); the site itself uses routes/web.php.
      */
-    'enabled' => false,
+    'enabled' => true,
 
     /*
      * Controllers in these directories that have routing attributes

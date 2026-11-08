@@ -39,6 +39,9 @@ class DatabaseSeeder extends Seeder
             TestimonialSeeder::class,
             FaqSeeder::class,
             WeeklyPlanRowSeeder::class,
+
+            // Mobile app learning content (structure only — lessons are written in the panel)
+            LearningSectionSeeder::class,
         ]);
     }
 }

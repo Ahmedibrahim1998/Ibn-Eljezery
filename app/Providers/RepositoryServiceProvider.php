@@ -10,6 +10,12 @@ use App\Repositories\Feature\FeatureRepository;
 use App\Repositories\Feature\FeatureRepositoryInterface;
 use App\Repositories\Lead\LeadRepository;
 use App\Repositories\Lead\LeadRepositoryInterface;
+use App\Repositories\Learning\LearningSectionRepository;
+use App\Repositories\Learning\LearningSectionRepositoryInterface;
+use App\Repositories\Learning\LearningSubjectRepository;
+use App\Repositories\Learning\LearningSubjectRepositoryInterface;
+use App\Repositories\Learning\LessonRepository;
+use App\Repositories\Learning\LessonRepositoryInterface;
 use App\Repositories\Program\ProgramRepository;
 use App\Repositories\Program\ProgramRepositoryInterface;
 use App\Repositories\Teacher\TeacherRepository;
@@ -36,6 +42,9 @@ class RepositoryServiceProvider extends ServiceProvider
         FeatureRepositoryInterface::class => FeatureRepository::class,
         WeeklyPlanRowRepositoryInterface::class => WeeklyPlanRowRepository::class,
         LeadRepositoryInterface::class => LeadRepository::class,
+        LearningSectionRepositoryInterface::class => LearningSectionRepository::class,
+        LearningSubjectRepositoryInterface::class => LearningSubjectRepository::class,
+        LessonRepositoryInterface::class => LessonRepository::class,
     ];
 
     public function register(): void

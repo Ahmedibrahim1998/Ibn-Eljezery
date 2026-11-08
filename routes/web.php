@@ -15,6 +15,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 // بوابة الدخول (معلم / مشرف / أدمن)
 Route::view('/portal', 'portal')->name('portal');
 
+// سياسة خصوصية تطبيق الموبايل (رابطها مطلوب في Google Play)
+Route::view('/privacy', 'privacy')->name('privacy');
+
 // "View all" listing pages
 Route::get('/teachers', [ListingController::class, 'teachers'])->name('teachers.index');
 Route::get('/programs', [ListingController::class, 'programs'])->name('programs.index');

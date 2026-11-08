@@ -37,4 +37,26 @@ return [
         'present' => 'حاضر',
         'absent' => 'غائب',
     ],
+
+    'madhhab' => [
+        'maliki' => 'المالكي',
+        'shafii' => 'الشافعي',
+        'hanafi' => 'الحنفي',
+        'hanbali' => 'الحنبلي',
+        'general' => 'عام / قول الجمهور',
+    ],
+
+    'content_status' => [
+        'draft' => 'مسودة',
+        'in_review' => 'قيد المراجعة',
+        'approved' => 'معتمد',
+        'published' => 'منشور',
+        'rejected' => 'مرفوض',
+    ],
+
+    'level' => [
+        'beginner' => 'مبتدئ',
+        'intermediate' => 'متوسط',
+        'advanced' => 'متقدم',
+    ],
 ];
