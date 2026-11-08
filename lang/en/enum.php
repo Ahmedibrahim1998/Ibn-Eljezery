@@ -37,4 +37,26 @@ return [
         'present' => 'Present',
         'absent' => 'Absent',
     ],
+
+    'madhhab' => [
+        'maliki' => 'Maliki',
+        'shafii' => 'Shafii',
+        'hanafi' => 'Hanafi',
+        'hanbali' => 'Hanbali',
+        'general' => 'General',
+    ],
+
+    'content_status' => [
+        'draft' => 'Draft',
+        'in_review' => 'In review',
+        'approved' => 'Approved',
+        'published' => 'Published',
+        'rejected' => 'Rejected',
+    ],
+
+    'level' => [
+        'beginner' => 'Beginner',
+        'intermediate' => 'Intermediate',
+        'advanced' => 'Advanced',
+    ],
 ];

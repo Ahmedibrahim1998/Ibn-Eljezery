@@ -12,5 +12,7 @@ class RoleSeeder extends Seeder
         // super_admin is created by Shield; ensure the extra roles exist too.
         Role::findOrCreate('teacher', 'web');
         Role::findOrCreate('supervisor', 'web');
+        // Approves / rejects / publishes app lessons (see LessonResource::REVIEWER_ROLES).
+        Role::findOrCreate('sharia_reviewer', 'web');
     }
 }
