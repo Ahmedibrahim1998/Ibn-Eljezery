@@ -68,6 +68,7 @@
   <footer class="py-3 bg-dark text-white-50 small">
     <div class="container text-center">
       <span>&copy; {{ date('Y') }} {{ localizedSetting('brand_name') }} - {{ siteText('footer.rights') }}</span>
+      <span class="mx-2">·</span><a class="text-white-50" href="{{ route('app.download') }}">{{ $locale === 'ar' ? 'حمّل تطبيق الموبايل' : 'Get the mobile app' }}</a>
     </div>
   </footer>
 
