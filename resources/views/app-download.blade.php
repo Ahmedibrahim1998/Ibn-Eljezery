@@ -1,8 +1,8 @@
 {{-- صفحة تنزيل تطبيق «ابن الجزري» (Android).
-     ملف الـ APK مش في git (حجمه كبير): بيترفع يدويًا على السيرفر في public/downloads/ibn-eljezery.apk
+     ملف الـ APK مش في git (حجمه كبير): بيترفع يدويًا على السيرفر في storage/app/public/downloads/ibn-eljezery.apk (فولدر shared مش بيتمسح مع الـ deploy)
      والزرار بيظهر تلقائي أول ما الملف يكون موجود. --}}
 @php
-  $apk = public_path('downloads/ibn-eljezery.apk');
+  $apk = storage_path('app/public/downloads/ibn-eljezery.apk');
   $available = is_file($apk);
   $sizeMb = $available ? number_format(filesize($apk) / 1048576, 0) : null;
   $updated = $available ? date('Y-m-d', filemtime($apk)) : null;
@@ -115,7 +115,7 @@
 
   <section class="panel" id="download">
     @if ($available)
-      <a class="btn" href="{{ asset('downloads/ibn-eljezery.apk') }}?v={{ $version }}" download="ibn-eljezery.apk">
+      <a class="btn" href="{{ asset('storage/downloads/ibn-eljezery.apk') }}?v={{ $version }}" download="ibn-eljezery.apk">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.87 3.22a11.5 11.5 0 0 0-9.82 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
         حمّل التطبيق لأندرويد
       </a>
