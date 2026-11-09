@@ -122,7 +122,9 @@ class MushafSettingsScreen extends StatelessWidget {
                 return Column(
                   children: [
                     SwitchListTile(
-                      secondary: const Icon(Icons.notifications_active_outlined),
+                      secondary: const Icon(
+                        Icons.notifications_active_outlined,
+                      ),
                       title: const Text('ذكّرني بوِردي كل يوم'),
                       value: r.enabled,
                       onChanged: (on) async {

@@ -28,8 +28,7 @@ class KhatmaPlan {
   double get progress => pagesRead / total;
 
   /// رقم اليوم في الخطة (يوم 1 = يوم البداية).
-  int dayNumber(DateTime now) =>
-      dayOf(now).difference(dayOf(start)).inDays + 1;
+  int dayNumber(DateTime now) => dayOf(now).difference(dayOf(start)).inDays + 1;
 
   bool doneToday(DateTime now) =>
       lastDone != null && dayOf(lastDone!) == dayOf(now);

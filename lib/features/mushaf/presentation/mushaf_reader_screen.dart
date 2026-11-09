@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../app/theme.dart';
 import '../../audio/data/audio_controller.dart';
 import '../../audio/presentation/audio_bar.dart';
 import '../../wird/data/wird_store.dart';
@@ -334,9 +335,12 @@ class _MushafReaderScreenState extends State<MushafReaderScreen> {
     return Scaffold(
       appBar: _chrome
           ? AppBar(
-              // شريط رفيع عشان الصفحة تاخد أكبر مساحة
+              // شريط رفيع أخضر غامق عشان الصفحة تاخد أكبر مساحة
               toolbarHeight: 40,
+              backgroundColor: AppColors.emeraldDeep,
+              foregroundColor: Colors.white,
               titleTextStyle: const TextStyle(
+                fontFamily: appFont,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: Colors.white,

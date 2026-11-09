@@ -28,8 +28,9 @@ class KhatmaStore extends ChangeNotifier {
   /// عدد الختمات اللي اكتملت بالخطة.
   int get completed => _prefs.getInt(_countKey) ?? 0;
 
-  Future<void> start(int days, {int fromPage = 1, DateTime? now}) =>
-      _save(KhatmaPlan(start: now ?? DateTime.now(), days: days, page: fromPage));
+  Future<void> start(int days, {int fromPage = 1, DateTime? now}) => _save(
+    KhatmaPlan(start: now ?? DateTime.now(), days: days, page: fromPage),
+  );
 
   /// "خلصت حصة النهارده" ← الخطة تتقدم. بيرجع true لو الختمة كملت.
   Future<bool> completePortion({DateTime? now}) async {

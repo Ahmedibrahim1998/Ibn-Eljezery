@@ -100,7 +100,10 @@ class _PlanCard extends StatelessWidget {
                       );
                     },
                     itemBuilder: (_) => const [
-                      PopupMenuItem(value: 'cancel', child: Text('إلغاء الخطة')),
+                      PopupMenuItem(
+                        value: 'cancel',
+                        child: Text('إلغاء الخطة'),
+                      ),
                     ],
                   ),
                 ],
@@ -116,7 +119,11 @@ class _PlanCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 '${arabicDigits(plan.pagesRead)} من ${arabicDigits(KhatmaPlan.total)} صفحة'
-                '${ahead < 0 ? ' • متأخر ${arabicDigits(-ahead)} صفحة' : ahead > 0 ? ' • سابق بـ ${arabicDigits(ahead)} صفحة 👏' : ''}',
+                '${ahead < 0
+                    ? ' • متأخر ${arabicDigits(-ahead)} صفحة'
+                    : ahead > 0
+                    ? ' • سابق بـ ${arabicDigits(ahead)} صفحة 👏'
+                    : ''}',
                 style: TextStyle(
                   fontSize: 12,
                   color: ahead < 0 ? scheme.error : null,
@@ -130,7 +137,9 @@ class _PlanCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          doneToday ? 'خلّصت حصة النهارده ✓ — حصة بكره:' : 'حصة النهارده:',
+                          doneToday
+                              ? 'خلّصت حصة النهارده ✓ — حصة بكره:'
+                              : 'حصة النهارده:',
                           style: Theme.of(context).textTheme.bodySmall,
                         ),
                         Text(
@@ -223,9 +232,7 @@ Future<void> showStartKhatmaSheet(BuildContext context) {
               children: [
                 for (final d in options)
                   ActionChip(
-                    label: Text(
-                      '${arabicDigits(d)} يوم • ${_perDay(d)}',
-                    ),
+                    label: Text('${arabicDigits(d)} يوم • ${_perDay(d)}'),
                     onPressed: () {
                       KhatmaStore.instance.start(d);
                       Navigator.pop(context);

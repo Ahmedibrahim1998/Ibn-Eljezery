@@ -75,7 +75,9 @@ class AudioController extends ChangeNotifier {
           AudioSource.uri(
             switch (downloads.localPath(reciter.id, v)) {
               final path? => Uri.file(path),
-              null => Uri.parse(reciter.urlFor(q.suraOf(v).number, q.ayahOf(v))),
+              null => Uri.parse(
+                reciter.urlFor(q.suraOf(v).number, q.ayahOf(v)),
+              ),
             },
             tag: MediaItem(
               id: '$i:$v',

@@ -15,7 +15,9 @@ class TafsirData {
   static Future<TafsirData>? _loading;
 
   static Future<TafsirData> load() => _loading ??= () async {
-    final raw = await rootBundle.loadString('assets/quran/tafsir_muyassar.json');
+    final raw = await rootBundle.loadString(
+      'assets/quran/tafsir_muyassar.json',
+    );
     return TafsirData._(await compute(_parse, raw));
   }();
 

@@ -40,7 +40,9 @@ class _ShareAyahDialogState extends State<_ShareAyahDialog> {
 
   String get _plainText {
     final q = QuranData.instance;
-    final b = StringBuffer('﴿${q.text(widget.verse)}﴾\n[${q.label(widget.verse)}]');
+    final b = StringBuffer(
+      '﴿${q.text(widget.verse)}﴾\n[${q.label(widget.verse)}]',
+    );
     if (_withTafsir && _tafsir != null) b.write('\n\nالتفسير الميسر: $_tafsir');
     b.write('\n\n— تطبيق ابن الجزري');
     return b.toString();
@@ -50,7 +52,8 @@ class _ShareAyahDialogState extends State<_ShareAyahDialog> {
     setState(() => _busy = true);
     try {
       final boundary =
-          _boundary.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+          _boundary.currentContext!.findRenderObject()!
+              as RenderRepaintBoundary;
       // دقة عالية عشان الصورة تبان حلوة على الواتساب والستوري
       final image = await boundary.toImage(pixelRatio: 3);
       final png = await image.toByteData(format: ui.ImageByteFormat.png);
@@ -102,9 +105,8 @@ class _ShareAyahDialogState extends State<_ShareAyahDialog> {
                 const SizedBox(width: 8),
                 Expanded(
                   child: OutlinedButton.icon(
-                    onPressed: () => SharePlus.instance.share(
-                      ShareParams(text: _plainText),
-                    ),
+                    onPressed: () =>
+                        SharePlus.instance.share(ShareParams(text: _plainText)),
                     icon: const Icon(Icons.text_fields),
                     label: const Text('نص'),
                   ),

@@ -3,6 +3,7 @@ import 'package:just_audio_background/just_audio_background.dart';
 
 import 'app/app.dart';
 import 'core/network/api_client.dart';
+import 'features/account/data/auth_store.dart';
 import 'features/audio/data/audio_downloads.dart';
 import 'features/khatma/data/khatma_store.dart';
 import 'features/reminder/reminder_service.dart';
@@ -26,6 +27,7 @@ Future<void> main() async {
   await SettingsStore.load();
   await MushafSettings.load();
   await ApiClient.load();
+  await AuthStore.load();
   await KhatmaStore.load();
   await ReminderService.load();
   await AudioDownloads.load();

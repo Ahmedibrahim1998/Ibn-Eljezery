@@ -38,9 +38,7 @@ class AudioDownloads extends ChangeNotifier {
   Set<String> _savedFor(String reciterId) => _saved.putIfAbsent(reciterId, () {
     final dir = Directory('$_root/$reciterId');
     if (!dir.existsSync()) return <String>{};
-    return {
-      for (final f in dir.listSync()) f.uri.pathSegments.last,
-    };
+    return {for (final f in dir.listSync()) f.uri.pathSegments.last};
   });
 
   /// مسار الملف لو الآية متنزّلة، وإلا null.

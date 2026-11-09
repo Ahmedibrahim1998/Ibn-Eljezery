@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// بيعرض Future: تحميل ← خطأ مع زرار "إعادة المحاولة" ← البيانات.
+import '../network/api_client.dart';
+import 'empty_state.dart';
+
+/// بيعرض Future: تحميل ← خطأ مع زرار "حاول تاني" ← البيانات.
 class AsyncView<T> extends StatelessWidget {
   const AsyncView({
     super.key,
@@ -22,24 +25,17 @@ class AsyncView<T> extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.cloud_off, size: 48),
-                  const SizedBox(height: 12),
-                  Text('${snapshot.error}', textAlign: TextAlign.center),
-                  const SizedBox(height: 12),
-                  FilledButton.icon(
-                    onPressed: onRetry,
-                    icon: const Icon(Icons.refresh),
-                    label: const Text('إعادة المحاولة'),
-                  ),
-                ],
-              ),
-            ),
+          final error = snapshot.error;
+          final offline = error is ApiException && error.statusCode == null;
+          return EmptyState(
+            icon: offline
+                ? Icons.wifi_off_rounded
+                : Icons.error_outline_rounded,
+            title: offline ? 'مفيش اتصال' : 'حصلت مشكلة',
+            message: '$error',
+            actionLabel: 'حاول تاني',
+            actionIcon: Icons.refresh_rounded,
+            onAction: onRetry,
           );
         }
         return builder(context, snapshot.data as T);
