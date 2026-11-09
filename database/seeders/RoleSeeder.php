@@ -14,5 +14,7 @@ class RoleSeeder extends Seeder
         Role::findOrCreate('supervisor', 'web');
         // Approves / rejects / publishes app lessons (see LessonResource::REVIEWER_ROLES).
         Role::findOrCreate('sharia_reviewer', 'web');
+        // Mobile app accounts (no panel access).
+        Role::findOrCreate('student', 'web');
     }
 }

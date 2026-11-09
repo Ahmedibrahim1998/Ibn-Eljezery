@@ -31,6 +31,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasOne(Teacher::class);
     }
 
+    /** اشتراكات الطالب في الدورات (المعمولة من التطبيق). */
+    public function bookings(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
     /** الدورات التي يشرف عليها هذا المستخدم (لمشرف الحضور). */
     public function supervisedCourses(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
@@ -45,6 +51,7 @@ class User extends Authenticatable implements FilamentUser
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
     ];
 
