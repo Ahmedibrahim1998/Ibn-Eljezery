@@ -50,6 +50,8 @@ return [
         'label' => 'Teacher',
         'plural' => 'Teachers',
         'section' => 'Teacher details',
+        'whatsapp_phone' => 'Teacher WhatsApp number',
+        'whatsapp_phone_help' => 'Shown on the teacher page in the app so students can reach them. If empty, the academy number is shown.',
         'name' => 'Name',
         'certification' => 'Certification',
         'description' => 'Description',

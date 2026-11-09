@@ -16,6 +16,10 @@ use App\Repositories\Learning\LearningSubjectRepository;
 use App\Repositories\Learning\LearningSubjectRepositoryInterface;
 use App\Repositories\Learning\LessonRepository;
 use App\Repositories\Learning\LessonRepositoryInterface;
+use App\Repositories\Booking\BookingRepository;
+use App\Repositories\Booking\BookingRepositoryInterface;
+use App\Repositories\User\UserRepository;
+use App\Repositories\User\UserRepositoryInterface;
 use App\Repositories\Program\ProgramRepository;
 use App\Repositories\Program\ProgramRepositoryInterface;
 use App\Repositories\Teacher\TeacherRepository;
@@ -45,6 +49,8 @@ class RepositoryServiceProvider extends ServiceProvider
         LearningSectionRepositoryInterface::class => LearningSectionRepository::class,
         LearningSubjectRepositoryInterface::class => LearningSubjectRepository::class,
         LessonRepositoryInterface::class => LessonRepository::class,
+        UserRepositoryInterface::class => UserRepository::class,
+        BookingRepositoryInterface::class => BookingRepository::class,
     ];
 
     public function register(): void

@@ -24,6 +24,7 @@ class Teacher extends Model
         'badge_ar',
         'badge_en',
         'photo',
+        'whatsapp_phone',
         'sort_order',
         'is_active',
     ];
@@ -36,6 +37,14 @@ class Teacher extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** wa.me link for the teacher, falling back to the academy's WhatsApp number. */
+    public function whatsappUrl(): ?string
+    {
+        $phone = $this->whatsapp_phone ?: setting('whatsapp_phone');
+
+        return $phone ? waUrl($phone) : null;
     }
 
     public function courses(): HasMany

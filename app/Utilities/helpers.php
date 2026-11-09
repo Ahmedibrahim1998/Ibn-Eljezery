@@ -35,6 +35,29 @@ if (! function_exists('waUrl')) {
     }
 }
 
+if (! function_exists('normalizePhone')) {
+    /**
+     * Normalize a phone number to international digits so the same student
+     * always matches: "010 1234 5678", "+20 10-1234-5678" and "00201012345678"
+     * all become "201012345678". A local Egyptian number (11 digits starting
+     * with 0) gets the 20 country code.
+     */
+    function normalizePhone(?string $phone): string
+    {
+        $digits = preg_replace('/\D+/', '', (string) $phone);
+
+        if (str_starts_with($digits, '00')) {
+            $digits = substr($digits, 2);
+        }
+
+        if (strlen($digits) === 11 && str_starts_with($digits, '0')) {
+            $digits = '20'.substr($digits, 1);
+        }
+
+        return $digits;
+    }
+}
+
 if (! function_exists('setting')) {
     /**
      * Read a site setting by key (cached).

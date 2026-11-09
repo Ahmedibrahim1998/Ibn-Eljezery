@@ -20,6 +20,7 @@ class Booking extends Model
 
     protected $fillable = [
         'course_id',
+        'user_id',
         'name',
         'phone',
         'email',
@@ -42,6 +43,12 @@ class Booking extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /** The app account that made this enrollment (null for website bookings). */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function attendances(): HasMany

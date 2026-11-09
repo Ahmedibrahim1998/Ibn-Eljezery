@@ -6,6 +6,7 @@ use App\Enum\Course\CourseTypeEnum;
 use App\Observers\CourseSessionObserver;
 use App\Utilities\Traits\HasLocalizedAttributes;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -41,6 +42,18 @@ class CourseSession extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /**
+     * Active sessions that haven't finished yet, soonest first. A session that
+     * started up to 3 hours ago still counts, so its Zoom link stays reachable
+     * while the class is running.
+     */
+    public function scopeUpcoming(Builder $query): Builder
+    {
+        return $query->where('is_active', true)
+            ->where('starts_at', '>=', now()->subHours(3))
+            ->orderBy('starts_at');
     }
 
     public function isOnline(): bool

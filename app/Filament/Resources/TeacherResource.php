@@ -57,6 +57,10 @@ class TeacherResource extends Resource
 
             Forms\Components\Section::make(trans('panel.common.settings_section'))->schema([
                 Forms\Components\FileUpload::make('photo')->label(trans('panel.teacher.photo'))->image()->directory('teachers')->imageEditor(),
+                // Shown on the teacher page in the mobile app (academy number if empty).
+                Forms\Components\TextInput::make('whatsapp_phone')->label(trans('panel.teacher.whatsapp_phone'))
+                    ->tel()->maxLength(30)->placeholder('+2010xxxxxxxx')
+                    ->helperText(trans('panel.teacher.whatsapp_phone_help')),
                 Forms\Components\TextInput::make('sort_order')->label(trans('panel.common.sort_order'))->numeric()->default(0),
                 Forms\Components\Toggle::make('is_active')->label(trans('panel.common.is_active'))->default(true),
             ])->columns(2),
