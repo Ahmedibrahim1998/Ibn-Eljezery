@@ -8,6 +8,7 @@ import 'package:ibneljezery_app/features/khatma/data/khatma_store.dart';
 import 'package:ibneljezery_app/features/mushaf/data/mushaf_settings.dart';
 import 'package:ibneljezery_app/features/mushaf/data/quran_data.dart';
 import 'package:ibneljezery_app/features/settings/data/settings_store.dart';
+import 'package:ibneljezery_app/features/splash/splash_screen.dart';
 import 'package:ibneljezery_app/features/wird/data/wird_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,19 +18,47 @@ void main() {
     FlutterSecureStorage.setMockInitialValues({});
   });
 
+  Future<void> loadStores(WidgetTester tester) => tester.runAsync(() async {
+    await QuranData.load();
+    await WirdStore.load();
+    await SettingsStore.load();
+    await MushafSettings.load();
+    await ApiClient.load();
+    await KhatmaStore.load();
+    await AuthStore.load();
+  });
+
   Future<void> boot(WidgetTester tester) async {
-    await tester.runAsync(() async {
-      await QuranData.load();
-      await WirdStore.load();
-      await SettingsStore.load();
-      await MushafSettings.load();
-      await ApiClient.load();
-      await KhatmaStore.load();
-      await AuthStore.load();
-    });
+    await loadStores(tester);
     await tester.pumpWidget(const IbnEljezeryApp());
+    // الواجهة الافتتاحية بتقفل لوحدها ← الرئيسية
+    await tester.pump(const Duration(seconds: 5));
     await tester.pumpAndSettle();
   }
+
+  testWidgets('الواجهة الافتتاحية: تظهر الأول وبعدها الرئيسية لوحدها', (
+    tester,
+  ) async {
+    await loadStores(tester);
+    await tester.pumpWidget(const IbnEljezeryApp());
+    await tester.pump();
+    expect(find.byType(SplashScreen), findsOneWidget);
+    expect(find.text('المصحف الشريف'), findsNothing);
+
+    await tester.pump(const Duration(seconds: 5));
+    await tester.pumpAndSettle();
+    expect(find.byType(SplashScreen), findsNothing);
+    expect(find.text('المصحف الشريف'), findsOneWidget);
+  });
+
+  testWidgets('الواجهة الافتتاحية: اللمس يتخطاها على طول', (tester) async {
+    await loadStores(tester);
+    await tester.pumpWidget(const IbnEljezeryApp());
+    await tester.pump();
+    await tester.tap(find.byType(SplashScreen));
+    await tester.pumpAndSettle();
+    expect(find.text('المصحف الشريف'), findsOneWidget);
+  });
 
   testWidgets('الرئيسية: بابين — المصحف والأكاديمية + كمّل قراءتك', (
     tester,

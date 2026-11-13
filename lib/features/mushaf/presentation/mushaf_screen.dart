@@ -11,6 +11,7 @@ import 'mushaf_index_screen.dart';
 import 'mushaf_reader_screen.dart';
 import 'mushaf_settings_screen.dart';
 import 'quran_search_screen.dart';
+import 'widgets/offline_mushaf_card.dart';
 
 /// الصفحة الرئيسية للمصحف: متابعة القراءة + وِردي + الفهرس والبحث + إعدادات المصحف.
 class MushafScreen extends StatelessWidget {
@@ -51,6 +52,7 @@ class MushafScreen extends StatelessWidget {
                     : 'سورة ${lastSura!.name} • صفحة ${arabicDigits(lastPage)}',
                 onTap: () => openMushafPage(context, lastPage ?? 1),
               ),
+              const OfflineMushafCard(),
               const SizedBox(height: 12),
               Row(
                 children: [

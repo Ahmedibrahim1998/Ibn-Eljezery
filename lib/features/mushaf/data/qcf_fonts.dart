@@ -23,8 +23,8 @@ class QcfFonts extends ChangeNotifier {
 
   final _dio = Dio(
     BaseOptions(
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 20),
+      connectTimeout: const Duration(seconds: 6),
+      receiveTimeout: const Duration(seconds: 15),
     ),
   );
   final _loaded = <int>{};
@@ -35,6 +35,16 @@ class QcfFonts extends ChangeNotifier {
   double? downloadAllProgress;
 
   bool isLoaded(int page) => _loaded.contains(page);
+
+  /// خط الصفحة متنزّل على الموبايل؟ (من غير ما نلمس النت)
+  Future<bool> isDownloaded(int page) async {
+    if (_loaded.contains(page)) return true;
+    try {
+      return await _file(await _directory(), page).exists();
+    } catch (_) {
+      return false;
+    }
+  }
 
   Future<Directory> _directory() async {
     return _dir ??= await Directory(

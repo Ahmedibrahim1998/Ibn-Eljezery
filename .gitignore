@@ -50,3 +50,6 @@ app.*.map.json
 # لقطات المراجعة البصرية (tool/screenshots)
 /tool/screenshots/out/
 /tool/screenshots/failures/
+
+# Kotlin compiler cache
+/android/.kotlin/

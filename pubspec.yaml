@@ -76,6 +76,7 @@ flutter:
     - assets/quran/mushaf_layout.json
     - assets/quran/tafsir_muyassar.json
     - assets/images/logo.png
+    - assets/images/splash.jpg
 
   fonts:
     # خط الواجهة (SIL OFL — assets/fonts/tajawal/OFL.txt)

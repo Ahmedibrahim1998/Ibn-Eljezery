@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import '../features/home/presentation/home_screen.dart';
+import '../features/splash/splash_screen.dart';
 import '../features/settings/data/settings_store.dart';
 import 'theme.dart';
 
-/// غلاف التطبيق: اللغة العربية واتجاه RTL والثيم والصفحة الأولى.
+/// غلاف التطبيق: اللغة العربية واتجاه RTL والثيم والصفحة الأولى (الواجهة الافتتاحية ← الرئيسية).
 class IbnEljezeryApp extends StatelessWidget {
   const IbnEljezeryApp({super.key});
 
@@ -24,7 +24,7 @@ class IbnEljezeryApp extends StatelessWidget {
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
         themeMode: SettingsStore.instance.themeMode,
-        home: const HomeScreen(),
+        home: const SplashScreen(),
       ),
     );
   }

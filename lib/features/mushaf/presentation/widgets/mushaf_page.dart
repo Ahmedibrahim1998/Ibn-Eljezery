@@ -250,55 +250,68 @@ class _MadaniBody extends StatefulWidget {
 class _MadaniBodyState extends State<_MadaniBody> with _Recognizers {
   static const _base = 40.0;
 
-  late Future<bool> _ready = _prepare();
+  /// null = بنشوف الخط موجود على الموبايل ولا لأ (لحظة)،
+  /// true = خط المدينة جاهز، false = نعرض الصفحة نص لحد ما الخط يوصل.
+  bool? _madani;
 
-  Future<bool> _prepare() async {
-    await MushafLayout.load();
-    return QcfFonts.instance.ensure(widget.page);
+  @override
+  void initState() {
+    super.initState();
+    _prepare();
   }
 
   @override
   void didUpdateWidget(_MadaniBody old) {
     super.didUpdateWidget(old);
-    if (old.page != widget.page) _ready = _prepare();
+    if (old.page != widget.page) _prepare();
+  }
+
+  /// المصحف لازم يفتح على طول حتى من غير نت:
+  /// الخط موجود ← خط المدينة. مش موجود ← نص فورًا، والخط يتنزل في الخلفية
+  /// وأول ما يوصل الصفحة تتقلب لخط المدينة لوحدها.
+  Future<void> _prepare() async {
+    final page = widget.page;
+    final fonts = QcfFonts.instance;
+    if (fonts.isLoaded(page) && MushafLayout.instance != null) {
+      _madani = true;
+      return;
+    }
+    _madani = null;
+    await MushafLayout.load();
+    final local = await fonts.isDownloaded(page);
+    if (!mounted || widget.page != page) return;
+    if (!local) setState(() => _madani = false);
+    final ok = await fonts.ensure(page);
+    if (!mounted || widget.page != page) return;
+    if (ok || _madani == null) setState(() => _madani = ok);
   }
 
   @override
   Widget build(BuildContext context) {
-    // لو الخط اتحمّل قبل كده ← اعرض على طول من غير ما نستنى
-    if (QcfFonts.instance.isLoaded(widget.page) &&
-        MushafLayout.instance != null) {
-      return _buildPage();
-    }
-
-    return FutureBuilder<bool>(
-      future: _ready,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState != ConnectionState.done) {
-          return const Center(child: CircularProgressIndicator(strokeWidth: 2));
-        }
-        if (snapshot.data != true) {
-          // مفيش نت والصفحة مش متنزّلة ← نعرضها نص، مع تنبيه صغير
-          return Column(
-            children: [
-              Text(
-                'الصفحة لم تُنزَّل بعد — معروضة نصاً',
-                style: Theme.of(context).textTheme.labelSmall,
-              ),
-              Expanded(
-                child: _TextBody(
-                  page: widget.page,
-                  onVerseTap: widget.onVerseTap,
-                  verseColor: widget.verseColor,
-                  ink: widget.ink,
-                ),
-              ),
-            ],
-          );
-        }
-        return _buildPage();
-      },
-    );
+    return switch (_madani) {
+      true => _buildPage(),
+      // لحظة قراءة الخط من الموبايل (مش من النت)
+      null => const SizedBox.expand(),
+      false => Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Text(
+              'الصفحة معروضة نص لحد ما خطها يتنزّل',
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+          ),
+          Expanded(
+            child: _TextBody(
+              page: widget.page,
+              onVerseTap: widget.onVerseTap,
+              verseColor: widget.verseColor,
+              ink: widget.ink,
+            ),
+          ),
+        ],
+      ),
+    };
   }
 
   Widget _buildPage() {
