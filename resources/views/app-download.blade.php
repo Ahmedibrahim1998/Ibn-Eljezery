@@ -1,12 +1,22 @@
 {{-- صفحة تنزيل تطبيق «ابن الجزري» (Android).
-     ملف الـ APK مش في git (حجمه كبير): بيترفع يدويًا على السيرفر في storage/app/public/downloads/ibn-eljezery.apk (فولدر shared مش بيتمسح مع الـ deploy)
-     والزرار بيظهر تلقائي أول ما الملف يكون موجود. --}}
+     الـ APK بيتدوّر عليه في مكانين (الأول اللي يلاقيه):
+     1) storage/app/public/downloads/ibn-eljezery.apk — لو اترفع يدويًا على السيرفر (فولدر shared مش بيتمسح مع الـ deploy)
+     2) public/downloads/ibn-eljezery.apk — النسخة اللي متسجلة في git وبتنزل مع كل deploy
+     والزرار بيظهر تلقائي أول ما أي واحد فيهم يكون موجود. --}}
 @php
-  $apk = storage_path('app/public/downloads/ibn-eljezery.apk');
-  $available = is_file($apk);
+  $candidates = [
+    storage_path('app/public/downloads/ibn-eljezery.apk') => 'storage/downloads/ibn-eljezery.apk',
+    public_path('downloads/ibn-eljezery.apk') => 'downloads/ibn-eljezery.apk',
+  ];
+  $apk = null;
+  $apkUrl = null;
+  foreach ($candidates as $path => $url) {
+    if (is_file($path)) { $apk = $path; $apkUrl = $url; break; }
+  }
+  $available = $apk !== null;
   $sizeMb = $available ? number_format(filesize($apk) / 1048576, 0) : null;
   $updated = $available ? date('Y-m-d', filemtime($apk)) : null;
-  $version = $available ? filemtime($apk) : null;
+  $version = $available ? substr(md5(filesize($apk).'-'.filemtime($apk)), 0, 8) : null;
 @endphp
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -115,7 +125,7 @@
 
   <section class="panel" id="download">
     @if ($available)
-      <a class="btn" href="{{ asset('storage/downloads/ibn-eljezery.apk') }}?v={{ $version }}" download="ibn-eljezery.apk">
+      <a class="btn" href="{{ asset($apkUrl) }}?v={{ $version }}" download="ibn-eljezery.apk">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.87 3.22a11.5 11.5 0 0 0-9.82 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
         حمّل التطبيق لأندرويد
       </a>
