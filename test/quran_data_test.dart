@@ -21,6 +21,22 @@ void main() {
     expect(q.label(QuranData.totalVerses - 1), 'الناس 6');
   });
 
+  test('البسملة مش جزء من الآية الأولى (غير الفاتحة)', () {
+    expect(q.text(q.indexOf(2, 1)), 'الٓمٓ');
+    for (final s in q.suras) {
+      final first = q.text(s.start);
+      if (s.number == 1) {
+        expect(first, startsWith('بِسْمِ'));
+      } else {
+        expect(
+          first,
+          isNot(contains('ٱللَّهِ ٱلرَّحْمَٰنِ')),
+          reason: 'سورة ${s.number}',
+        );
+      }
+    }
+  });
+
   test('آية الكرسي: البقرة 255 ← صفحة 42 والجزء 3', () {
     final i = q.indexOf(2, 255);
     expect(q.suraOf(i).name, 'البقرة');

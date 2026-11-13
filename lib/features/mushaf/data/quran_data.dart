@@ -70,9 +70,23 @@ class QuranData {
     ];
     int toIndex(List p) => suras[(p[0] as int) - 1].start + (p[1] as int) - 1;
 
+    // نص Tanzil حاطط البسملة في أول الآية الأولى من كل سورة، وهي مش منها
+    // (غير الفاتحة). المصحف بيعرضها سطر لوحدها، فنشيلها من نص الآية
+    // عشان ماتتكررش، وعشان مشاركة الآية ونسخها تبقى صح.
+    final verses = List<String>.from(json['verses']);
+    // «الرحيم» زي ما هي مكتوبة في الفاتحة (نفس ترتيب التشكيل اللي في الملف)
+    final rahim = verses[0].split(' ').last;
+    for (final s in suras) {
+      if (s.number == 1 || s.number == 9) continue;
+      final words = verses[s.start].split(' ');
+      if (words.length > 4 && words[3] == rahim) {
+        verses[s.start] = words.skip(4).join(' ');
+      }
+    }
+
     instance = QuranData._(
       suras,
-      List<String>.from(json['verses']),
+      verses,
       List<String>.from(json['search']),
       [for (final p in json['juz']) toIndex(p)],
       [for (final p in json['pages']) toIndex(p)],
