@@ -19,6 +19,7 @@ import 'package:ibneljezery_app/features/academy/presentation/academy_screen.dar
 import 'package:ibneljezery_app/features/academy/presentation/course_screen.dart';
 import 'package:ibneljezery_app/features/academy/presentation/courses_screen.dart';
 import 'package:ibneljezery_app/features/academy/presentation/teachers_screen.dart';
+import 'package:ibneljezery_app/features/academy/presentation/recordings_screen.dart';
 import 'package:ibneljezery_app/features/account/data/auth_store.dart';
 import 'package:ibneljezery_app/features/account/presentation/login_screen.dart';
 import 'package:ibneljezery_app/features/home/presentation/home_screen.dart';
@@ -106,4 +107,5 @@ void main() {
   testWidgets('10 login', (t) => shot(t, '10_login', const LoginScreen()));
   testWidgets('11 register', (t) => shot(t, '11_register', const LoginScreen(register: true)));
   testWidgets('12 settings', (t) => shot(t, '12_settings', const SettingsScreen()));
+  testWidgets('13 recordings', (t) => shot(t, '13_recordings', const RecordingsScreen()));
 }
