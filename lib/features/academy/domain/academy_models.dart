@@ -228,3 +228,55 @@ class Student {
     whatsappUrl: json['whatsapp_url'],
   );
 }
+
+/// نوع المادة في «التسجيلات».
+enum RecordingType {
+  pdf('ملفات PDF', 'PDF'),
+  audio('تسجيلات صوتية', 'صوت'),
+  video('فيديوهات', 'فيديو'),
+  link('روابط', 'رابط');
+
+  const RecordingType(this.plural, this.short);
+
+  final String plural;
+  final String short;
+
+  static RecordingType from(String? value) => RecordingType.values.firstWhere(
+    (t) => t.name == value,
+    orElse: () => RecordingType.link,
+  );
+}
+
+/// مادة من قسم «التسجيلات» (متاحة للكل).
+class Recording {
+  const Recording({
+    required this.id,
+    required this.title,
+    required this.type,
+    this.description,
+    this.url,
+    this.teacherName,
+    this.courseTitle,
+    this.createdAt,
+  });
+
+  final int id;
+  final String title;
+  final RecordingType type;
+  final String? description;
+  final String? url;
+  final String? teacherName;
+  final String? courseTitle;
+  final DateTime? createdAt;
+
+  factory Recording.fromJson(Map<String, dynamic> json) => Recording(
+    id: json['id'],
+    title: json['title'] ?? '',
+    type: RecordingType.from(json['type']),
+    description: json['description'],
+    url: json['url'],
+    teacherName: json['teacher']?['name'],
+    courseTitle: json['course']?['title'],
+    createdAt: DateTime.tryParse(json['created_at'] ?? ''),
+  );
+}

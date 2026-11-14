@@ -7,6 +7,7 @@ import '../../account/presentation/login_screen.dart';
 import 'courses_screen.dart';
 import 'my_courses_tab.dart';
 import 'teacher_tab.dart';
+import 'recordings_screen.dart';
 import 'teachers_screen.dart';
 
 /// الأكاديمية: كروت ← دورات أونلاين / حضوري / المعلمين / دوراتي (أو مجموعاتي للمعلم).
@@ -74,6 +75,13 @@ class AcademyScreen extends StatelessWidget {
                     color: AppColors.emerald,
                     onTap: () =>
                         _push(context, const CoursesScreen(online: false)),
+                  ),
+                  _Tile(
+                    title: 'التسجيلات',
+                    subtitle: 'دروس وملفات PDF',
+                    icon: Icons.video_library_rounded,
+                    color: const Color(0xFFC0392B),
+                    onTap: () => _push(context, const RecordingsScreen()),
                   ),
                   _Tile(
                     title: 'المعلمين',

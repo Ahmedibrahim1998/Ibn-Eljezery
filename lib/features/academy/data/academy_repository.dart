@@ -11,6 +11,12 @@ class AcademyRepository {
     return [for (final c in data) Course.fromJson(c)];
   }
 
+  /// «التسجيلات»: PDF / صوت / فيديو / روابط (للكل).
+  Future<List<Recording>> recordings() async {
+    final data = await ApiClient.instance.get('/academy/recordings');
+    return [for (final r in data) Recording.fromJson(r)];
+  }
+
   Future<List<Teacher>> teachers() async {
     final data = await ApiClient.instance.get('/academy/teachers');
     return [for (final t in data) Teacher.fromJson(t)];

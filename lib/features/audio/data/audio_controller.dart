@@ -42,6 +42,14 @@ class AudioController extends ChangeNotifier {
   int? rangeTo;
   String? error;
 
+  /// تسجيل من قسم «التسجيلات» شغّال دلوقتي (بدل التلاوة).
+  String? recordingId;
+  String? recordingTitle;
+
+  Stream<Duration> get positionStream => _player.positionStream;
+  Duration? get duration => _player.duration;
+  Future<void> seek(Duration position) => _player.seek(position);
+
   bool get isActive => _queue.isNotEmpty;
   bool get isPlaying => _player.playing;
   bool get isLoading =>
@@ -60,6 +68,7 @@ class AudioController extends ChangeNotifier {
       for (var v = from; v <= last; v++)
         for (var r = 0; r < settings.repeat; r++) v,
     ];
+    recordingId = recordingTitle = null;
     rangeFrom = from;
     rangeTo = last;
     currentVerse = from;
@@ -94,6 +103,38 @@ class AudioController extends ChangeNotifier {
     }
   }
 
+  /// شغّل تسجيل صوتي من «التسجيلات» (بيوقف التلاوة لو شغالة).
+  Future<void> playRecording({
+    required String id,
+    required String url,
+    required String title,
+    String? artist,
+  }) async {
+    _queue = const [];
+    currentVerse = rangeFrom = rangeTo = null;
+    recordingId = id;
+    recordingTitle = title;
+    error = null;
+    notifyListeners();
+    try {
+      await _player.setAudioSource(
+        AudioSource.uri(
+          Uri.parse(url),
+          tag: MediaItem(
+            id: 'recording:$id',
+            title: title,
+            artist: artist ?? 'أكاديمية ابن الجزري',
+            album: 'ابن الجزري',
+          ),
+        ),
+      );
+      unawaited(_player.play());
+    } catch (e) {
+      error = 'تعذّر تشغيل التسجيل. تأكد من الإنترنت.';
+      await stop();
+    }
+  }
+
   Future<void> togglePause() async {
     if (_player.playing) {
       await _player.pause();
@@ -111,6 +152,7 @@ class AudioController extends ChangeNotifier {
     await _player.stop();
     _queue = const [];
     currentVerse = rangeFrom = rangeTo = null;
+    recordingId = recordingTitle = null;
     notifyListeners();
   }
 }
