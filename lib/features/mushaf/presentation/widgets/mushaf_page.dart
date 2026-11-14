@@ -56,9 +56,13 @@ class MushafPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _HiddenScope(
-      hidden: verseHidden ?? (_) => false,
-      child: Builder(builder: _build),
+    // صفحة المصحف بتظبط حجمها على مساحة الشاشة (وحجم خطه من إعدادات المصحف)،
+    // فتكبير خط الموبايل من إعدادات النظام مايخرّجهاش برا الصفحة.
+    return MediaQuery.withNoTextScaling(
+      child: _HiddenScope(
+        hidden: verseHidden ?? (_) => false,
+        child: Builder(builder: _build),
+      ),
     );
   }
 

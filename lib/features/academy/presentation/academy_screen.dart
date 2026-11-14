@@ -41,13 +41,7 @@ class AcademyScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                childAspectRatio: 1.15,
+              _TileGrid(
                 children: [
                   if (teacher)
                     _Tile(
@@ -175,7 +169,10 @@ class _AccountHeader extends StatelessWidget {
                               ),
                               onPressed: () =>
                                   openLogin(context, register: true),
-                              child: const Text('حساب جديد'),
+                              child: const FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text('حساب جديد', maxLines: 1),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -186,7 +183,10 @@ class _AccountHeader extends StatelessWidget {
                                 side: const BorderSide(color: Colors.white54),
                               ),
                               onPressed: () => openLogin(context),
-                              child: const Text('دخول'),
+                              child: const FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text('دخول', maxLines: 1),
+                              ),
                             ),
                           ),
                         ],
@@ -271,13 +271,15 @@ class _Tile extends StatelessWidget {
                 ),
                 child: Icon(icon, color: color, size: 28),
               ),
-              const Spacer(),
+              const SizedBox(height: 14),
               Text(
                 title,
                 style: const TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 2),
               Text(
@@ -307,4 +309,51 @@ class _Wrapped extends StatelessWidget {
     appBar: AppBar(title: Text(title)),
     body: child,
   );
+}
+
+/// شبكة الكروت: عمودين على الموبايل وتلاتة على التابلت، وكل صف ارتفاعه على قد
+/// محتواه (مفيش نص بيخرج برا الكارت على الموبايلات الصغيرة أو مع الخط الكبير).
+class _TileGrid extends StatelessWidget {
+  const _TileGrid({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, box) {
+        final columns = box.maxWidth >= 600 ? 3 : 2;
+        return Column(
+          children: [
+            for (var i = 0; i < children.length; i += columns)
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: i + columns < children.length ? 12 : 0,
+                ),
+                child: IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (var j = 0; j < columns; j++) ...[
+                        if (j > 0) const SizedBox(width: 12),
+                        Expanded(
+                          child: i + j < children.length
+                              ? ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    minHeight: 140,
+                                  ),
+                                  child: children[i + j],
+                                )
+                              : const SizedBox(),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
+    );
+  }
 }

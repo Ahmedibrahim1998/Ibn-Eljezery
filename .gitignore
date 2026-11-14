@@ -53,3 +53,5 @@ app.*.map.json
 
 # Kotlin compiler cache
 /android/.kotlin/
+/tool/responsive/out/
+/tool/responsive/failures/
