@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// عميل الـ API بتاع Laravel (/api/v1) مع كاش أوفلاين بسيط.
@@ -48,6 +49,11 @@ class ApiClient {
 
   final Dio _dio;
   final SharedPreferences _prefs;
+
+  /// للاختبارات بس: ردود وهمية بدل السيرفر.
+  @visibleForTesting
+  set httpClientAdapter(HttpClientAdapter adapter) =>
+      _dio.httpClientAdapter = adapter;
 
   /// التوكن الحالي (AuthStore بيحدده) ← بيتبعت في كل طلب.
   String? Function()? tokenProvider;
@@ -106,33 +112,35 @@ class ApiClient {
         'تعذّر الاتصال بالسيرفر. تأكد من الإنترنت وحاول مرة أخرى.',
       );
     }
+    final status = response.statusCode;
     final body = response.data;
-    if (body is Map) {
+    // رسائل السيرفر بتتعرض بس لو عربي (رسائلنا)، عشان الطالب مايشوفش
+    // رسائل Laravel الإنجليزي التقنية زي "The route ... could not be found".
+    if (body is Map && status != null && status < 500 && status != 404) {
       final errors = body['errors'];
       if (errors is Map && errors.isNotEmpty) {
         final first = errors.values.first;
-        return ApiException(
-          first is List ? '${first.first}' : '$first',
-          response.statusCode,
-        );
+        final text = first is List ? '${first.first}' : '$first';
+        if (_isArabic(text)) return ApiException(text, status);
       }
       final message = body['message'];
-      if (message is String &&
-          message.isNotEmpty &&
-          response.statusCode != 500) {
-        return ApiException(message, response.statusCode);
+      if (message is String && _isArabic(message)) {
+        return ApiException(message, status);
       }
     }
-    return switch (response.statusCode) {
-      401 => const ApiException('لازم تسجّل دخول الأول', 401),
-      403 => const ApiException('غير مسموح', 403),
-      404 => const ApiException('المحتوى غير موجود', 404),
-      _ => ApiException(
-        'حصلت مشكلة في السيرفر، حاول تاني بعد شوية',
-        response.statusCode,
-      ),
-    };
+    return ApiException(switch (status) {
+      401 => 'لازم تسجّل دخول الأول',
+      403 => 'الحساب ده مش مسموحله بالخطوة دي',
+      404 || 405 => 'الخدمة دي مش متاحة دلوقتي، جرّب تاني بعد شوية',
+      419 || 422 => 'راجع البيانات وجرّب تاني',
+      429 => 'محاولات كتير ورا بعض، استنى دقيقة وجرّب تاني',
+      _ => 'حصلت مشكلة في السيرفر، جرّب تاني بعد شوية',
+    }, status);
   }
+
+  static final _arabic = RegExp(r'[؀-ۿ]');
+
+  static bool _isArabic(String text) => _arabic.hasMatch(text);
 }
 
 class ApiException implements Exception {
